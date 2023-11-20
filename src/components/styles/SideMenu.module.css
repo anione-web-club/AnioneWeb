@@ -1,0 +1,31 @@
+.sideMenu {
+  width: 0;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  right: 0;
+  background-color: #111;
+  overflow-x: hidden;
+  z-index: 1;
+  transition: width 0.4s;
+}
+
+.sideMenu.open {
+  width: 250px;
+}
+
+.menuList {
+  margin-top: 75px;
+}
+
+.menuList > * {
+  font-size: 20px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  display: block;
+  color: white;
+  margin-left: 24px;
+  padding: 8px;
+  white-space: nowrap; /* 자동 줄바꿈 방지 */
+}
