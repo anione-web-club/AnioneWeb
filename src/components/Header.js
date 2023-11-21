@@ -17,11 +17,11 @@ export default function Header() {
     <header>
       <Layout>
         <Link href="/">
-          <Image src="/WebClubLogo.png" alt="로고" width={250} height={75} />
+          <Image src="/logo.png" alt="로고" width={250} height={75} />
         </Link>
 
         <button onClick={toggleMenu} className={styles.moblieMenuBtn}>
-          {isOpen ? <span className={styles.whiteText}>&#9747;</span> : <>&#9776;</>}
+          {isOpen ? <span>&#9747;</span> : <>&#9776;</>}
         </button>
 
         <SideMenu isOpen={isOpen} />
