@@ -5,8 +5,8 @@ export default function Footer() {
   return (
     <footer>
       <Layout>
-        <div className={styles.margin}>
-          <div>{/* 내용 작성 */}</div>
+        <div className={styles.padding}>
+          <div>제작: 웹 프로그래밍 동아리</div>
         </div>
       </Layout>
     </footer>

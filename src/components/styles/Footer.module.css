@@ -1,3 +1,7 @@
-.margin {
-  margin: 16px 0;
+.padding {
+  padding: 16px 0;
+}
+
+.padding * {
+  color: rgb(88, 102, 122);
 }
