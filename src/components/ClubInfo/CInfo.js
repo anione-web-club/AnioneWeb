@@ -1,5 +1,5 @@
 import Image from "next/image";
-import styles from "@/styles/ClubInfo.module.css";
+import styles from "@/styles/clubinfo.module.css";
 
 export default function CInfo() {
   return (
