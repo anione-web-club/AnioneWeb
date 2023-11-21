@@ -1,6 +1,6 @@
-import WebInfo from "@/components/WebInfo";
-import GameInfo from "@/components/GameInfo";
-import CInfo from "@/components/CInfo";
+import WebInfo from "@/components/ClubInfo/WebInfo";
+import GameInfo from "@/components/ClubInfo/GameInfo";
+import CInfo from "@/components/ClubInfo/CInfo";
 import styles from "@/styles/clubinfo.module.css";
 
 export default function ClubInfo() {
