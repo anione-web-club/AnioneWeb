@@ -4,7 +4,7 @@
   position: fixed;
   top: 0;
   right: 0;
-  background-color: #111;
+  background-color: rgb(40, 40, 40);
   overflow-x: hidden;
   z-index: 1;
   transition: width 0.4s;
@@ -19,12 +19,15 @@
 }
 
 .menuList > * {
+  font-family: Consolas, Menlo, Monaco, "Lucida Console", "Liberation Mono", "DejaVu Sans Mono",
+    "Bitstream Vera Sans Mono", "Courier New", monospace, serif;
   font-size: 20px;
+  font-weight: 1000;
   cursor: pointer;
   background: none;
   border: none;
   display: block;
-  color: white;
+  color: rgb(156, 220, 232);
   margin-left: 24px;
   padding: 8px;
   white-space: nowrap; /* 자동 줄바꿈 방지 */

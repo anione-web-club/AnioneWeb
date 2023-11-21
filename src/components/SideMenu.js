@@ -4,15 +4,15 @@ import styles from "./styles/SideMenu.module.css";
 
 const SideMenuList = [
   {
-    name: "동아리 정보",
+    name: "ClubInfo",
     path: "/clubinfo",
   },
   {
-    name: "작품 목록",
-    path: "#projects",
+    name: "Projects",
+    path: "/projects",
   },
   {
-    name: "게임 랭킹",
+    name: "Game Ranking",
     path: "#ranking",
   },
 ];
