@@ -7,8 +7,11 @@ export default function ClubInfo() {
   return (
     <div className={styles.background}>
       <h1 className={styles.title}>동아리 소개</h1>
+      <hr />
       <WebInfo />
+      <hr />
       <GameInfo />
+      <hr />
       <CInfo />
     </div>
   );
