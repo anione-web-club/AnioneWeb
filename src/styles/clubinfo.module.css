@@ -1,0 +1,47 @@
+.background {
+  background-color: rgb(2, 21, 51);
+  padding: 20px 0;
+}
+
+.background > * {
+  color: white;
+}
+
+.title {
+  text-align: center;
+}
+
+.flex {
+  padding: 20px 0;
+}
+
+.flex > * {
+  padding: 0 15px;
+}
+@media screen and (max-width: 768px) {
+  .flex > .imgCover {
+    width: calc(100% - 30px);
+  }
+
+  .imgCover > img {
+    width: 70%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .flex {
+    display: flex;
+    margin: 0 20px;
+  }
+}
+
+.subtitle {
+  color: rgb(255, 195, 0);
+}
+
+.text {
+  color: rgb(88, 102, 122);
+}

@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Layout from "@/components/Layout";
+import Link from "next/link";
 import Image from "next/image";
 import SideMenu from "@/components/SideMenu";
 import styles from "./styles/Header.module.css";
@@ -15,7 +16,9 @@ export default function Header() {
   return (
     <header>
       <Layout>
-        <Image src="/WebClubLogo.png" alt="로고" width={250} height={75} />
+        <Link href="/">
+          <Image src="/WebClubLogo.png" alt="로고" width={250} height={75} />
+        </Link>
 
         <button onClick={toggleMenu} className={styles.moblieMenuBtn}>
           {isOpen ? <span className={styles.whiteText}>&#9747;</span> : <>&#9776;</>}

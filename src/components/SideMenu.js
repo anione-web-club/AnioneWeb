@@ -5,7 +5,7 @@ import styles from "./styles/SideMenu.module.css";
 const SideMenuList = [
   {
     name: "동아리 정보",
-    path: "#clubInfo",
+    path: "/clubinfo",
   },
   {
     name: "작품 목록",
