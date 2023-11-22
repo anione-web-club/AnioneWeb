@@ -10,7 +10,8 @@ export default function () {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "text": "I am a"
+                "role": "user",
+                "content": "안녕?"
             })
         }).then(res => res.json())
             .then(data => console.log(data))
