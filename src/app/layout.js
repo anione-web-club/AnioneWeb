@@ -7,6 +7,7 @@ export default function RootLayout({ children }) {
     <html lang="ko">
       <body>
         <Header />
+        <div className="headerMargin" />
         {children}
         <Footer />
       </body>
