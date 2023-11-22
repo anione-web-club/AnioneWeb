@@ -7,8 +7,10 @@ export default function RootLayout({ children }) {
     <html lang="ko">
       <body>
         <Header />
-        <div className="headerMargin" />
-        {children}
+        <div id="wrapper">
+          <div className="headerMargin" />
+          {children}
+        </div>
         <Footer />
       </body>
     </html>
