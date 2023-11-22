@@ -20,7 +20,7 @@
 
 @media screen and (max-width: 768px) {
   .flex > .imgCover {
-    width: calc(100% - 30px);
+    width: calc(100% - 40px);
   }
 
   .imgCover > img {
