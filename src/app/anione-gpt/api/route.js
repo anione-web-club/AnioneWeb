@@ -1,6 +1,7 @@
 import OpenAI from "openai"
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { buildMessage } from "@/util/message";
 
 const openai = new OpenAI()
 const system = readFileSync(join(
@@ -10,11 +11,8 @@ const system = readFileSync(join(
 
 export async function POST(req) {
     const messages = [
-        {
-            "role": "system",
-            "content": system
-        },
-        await req.json(),
+        buildMessage('system', system),
+        ...await req.json(),
     ]
     const data = {
         messages,
