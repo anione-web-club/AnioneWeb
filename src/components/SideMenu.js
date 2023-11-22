@@ -13,7 +13,7 @@ const SideMenuList = [
   },
   {
     name: "Game Ranking",
-    path: "#ranking",
+    path: "/ranking",
   },
 ];
 
