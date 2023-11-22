@@ -11,7 +11,7 @@ export default function () {
             },
             body: JSON.stringify({
                 "role": "user",
-                "content": "안녕?"
+                "content": "넌 누구야"
             })
         }).then(res => res.json())
             .then(data => console.log(data))
