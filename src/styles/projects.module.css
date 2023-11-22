@@ -8,6 +8,39 @@
   color: white;
 }
 
+.flex {
+  padding: 20px 0;
+}
+
+@media screen and (max-width: 768px) {
+  .imgCover {
+    width: 100%;
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .flex {
+    display: flex;
+    margin: 0 20px;
+  }
+
+  .flex > * {
+    padding: 0 20px;
+  }
+
+  .imgCover {
+    width: 50%;
+  }
+}
+
+.imgCover > img {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
 .subtitle {
-  margin-top: 0;
+  padding-left: 6px;
+  margin-top: 7px;
 }
