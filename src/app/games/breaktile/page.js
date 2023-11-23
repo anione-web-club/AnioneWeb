@@ -239,7 +239,48 @@ export default function BreakTile() {
     document.addEventListener("keyup", keyUpHandler, false);
     document.addEventListener("keydown", keyDownHandler, false);
 
-    gameManager();
+    function loadScene() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "white";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.font = "30px Arial";
+      ctx.fillStyle = "black";
+      ctx.textAlign = "center";
+      ctx.fillText("Loading...", canvas.width / 2, canvas.height / 2);
+
+      setTimeout(TitleScene, 1000);
+    }
+
+    function TitleScene() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "white";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.font = "30px Arial";
+      ctx.fillStyle = "black";
+      ctx.textAlign = "center";
+      ctx.fillText("Break Tile", canvas.width / 2, canvas.height / 2);
+
+      ctx.font = "20px Arial";
+      ctx.fillText("Press any key to start", canvas.width / 2, canvas.height / 2 + 30);
+
+      document.addEventListener("keydown", startGame, false);
+      document.addEventListener("click", startGame, false);
+      document.addEventListener("touchstart", startGame, false);
+    }
+
+    function startGame() {
+      document.removeEventListener("keydown", startGame, false);
+      document.removeEventListener("click", startGame, false);
+      document.removeEventListener("touchstart", startGame, false);
+
+      gameManager();
+    }
+
+    loadScene();
   }, []);
 
   return (
