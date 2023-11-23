@@ -15,6 +15,10 @@ const SideMenuList = [
     name: "Game Ranking",
     path: "/ranking",
   },
+  {
+    name: "Guest Book",
+    path: "/guestbook",
+  },
 ];
 
 export default function SideMenu({ isOpen }) {
