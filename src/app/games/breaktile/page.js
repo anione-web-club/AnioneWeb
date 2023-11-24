@@ -194,6 +194,9 @@ export default function BreakTile() {
     function gameManager() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      document.addEventListener("keyup", keyUpHandler, false);
+      document.addEventListener("keydown", keyDownHandler, false);
+
       movePlayer();
 
       drawBackground();
@@ -209,8 +212,6 @@ export default function BreakTile() {
 
       requestAnimationFrame(gameManager);
     }
-
-    setTimeout(createWarning, warningTime);
 
     function keyDownHandler(e) {
       if (e.key === "Up" || e.key === "ArrowUp") {
@@ -236,9 +237,6 @@ export default function BreakTile() {
       }
     }
 
-    document.addEventListener("keyup", keyUpHandler, false);
-    document.addEventListener("keydown", keyDownHandler, false);
-
     function loadScene() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -250,7 +248,7 @@ export default function BreakTile() {
       ctx.textAlign = "center";
       ctx.fillText("Loading...", canvas.width / 2, canvas.height / 2);
 
-      setTimeout(TitleScene, 1000);
+      setTimeout(TitleScene, 2000);
     }
 
     function TitleScene() {
@@ -268,15 +266,16 @@ export default function BreakTile() {
       ctx.fillText("Press any key to start", canvas.width / 2, canvas.height / 2 + 30);
 
       document.addEventListener("keydown", startGame, false);
-      document.addEventListener("click", startGame, false);
       document.addEventListener("touchstart", startGame, false);
+      document.addEventListener("click", startGame, false);
     }
 
     function startGame() {
       document.removeEventListener("keydown", startGame, false);
-      document.removeEventListener("click", startGame, false);
       document.removeEventListener("touchstart", startGame, false);
+      document.removeEventListener("click", startGame, false);
 
+      setTimeout(createWarning, warningTime);
       gameManager();
     }
 
