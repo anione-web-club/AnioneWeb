@@ -11,16 +11,16 @@ const system = readFileSync(join(
 )).toString()
 
 export async function POST(req) {
-    const messages = [
+    let { messages } = await req.json()
+    messages = [
         buildMessage('system', system),
-        ...(await req.json()).messages,
+        ...messages,
     ]
-    const data = {
+    const response = await openai.chat.completions.create({
         messages,
         model: process.env.ANIONE_GPT_MODEL_ID,
         stream: true,
-    }
-    const response = await openai.chat.completions.create(data)
+    })
     const stream = OpenAIStream(response)
     return new StreamingTextResponse(stream)
 }
