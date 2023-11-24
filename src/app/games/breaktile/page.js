@@ -20,7 +20,7 @@ export default function BreakTile() {
     const playerSize = canvas.width / 50;
     let x = canvas.width / 2;
     let y = canvas.height / 2;
-    const moveSpeed = playerSize / 2.5;
+    const moveSpeed = playerSize / 3.5;
 
     let upPressed = false;
     let downPressed = false;
@@ -34,7 +34,7 @@ export default function BreakTile() {
     const brickSize = canvas.width / brickLineCount;
     const bricks = [];
 
-    let warningTime = 3000;
+    let warningTime = 2500;
     let meteorTime = 1500;
 
     let fixWarngingCount = 1;
@@ -155,7 +155,7 @@ export default function BreakTile() {
     function removeMeteor() {
       console.log("removeMeteor");
 
-      const removeCount = Math.floor(Math.random() * 10) + 1; // 1 ~ 10
+      const removeCount = Math.floor(Math.random() * 10) + 5; // 5 ~ 15
 
       for (let i = 0; i < removeCount; i++) {
         const c = Math.floor(Math.random() * brickLineCount);
