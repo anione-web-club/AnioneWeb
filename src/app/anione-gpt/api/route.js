@@ -10,14 +10,10 @@ const system = readFileSync(join(
     'public', 'anione-gpt', 'system.txt'
 )).toString()
 
-export const runtime = 'edge'
-
 export async function POST(req) {
-    const json = await req.json()
-    console.log(json)
     const messages = [
         buildMessage('system', system),
-        ...json,
+        ...(await req.json()).messages,
     ]
     const data = {
         messages,
