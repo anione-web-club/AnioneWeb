@@ -2,6 +2,7 @@ import OpenAI from "openai"
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { buildMessage } from "@/util/message";
+import { OpenAIStream, StreamingTextResponse } from "ai";
 
 const openai = new OpenAI()
 const system = readFileSync(join(
@@ -9,16 +10,21 @@ const system = readFileSync(join(
     'public', 'anione-gpt', 'system.txt'
 )).toString()
 
+export const runtime = 'edge'
+
 export async function POST(req) {
+    const json = await req.json()
+    console.log(json)
     const messages = [
         buildMessage('system', system),
-        ...await req.json(),
+        ...json,
     ]
     const data = {
         messages,
         model: process.env.ANIONE_GPT_MODEL_ID,
-        stream: false,
+        stream: true,
     }
     const response = await openai.chat.completions.create(data)
-    return Response.json(response.choices[0].message)
+    const stream = OpenAIStream(response)
+    return new StreamingTextResponse(stream)
 }
