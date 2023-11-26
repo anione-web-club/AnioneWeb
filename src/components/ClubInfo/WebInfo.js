@@ -5,7 +5,7 @@ export default function WebInfo() {
   return (
     <div className={styles.flex}>
       <div className={styles.imgCover}>
-        <Image src="/club/web.png" alt="웹 프로그래밍 동아리" width={425} height={300} />
+        <Image src="/images/club/web.png" alt="웹 프로그래밍 동아리" width={425} height={300} />
       </div>
       <div>
         <h2 className={styles.subtitle}>웹 프로그래밍 동아리</h2>
