@@ -19,6 +19,10 @@ const SideMenuList = [
     name: "Guest Book",
     path: "/guestbook",
   },
+  {
+    name: "Anione GPT",
+    path: "/anione-gpt",
+  },
 ];
 
 export default function SideMenu({ isOpen }) {
