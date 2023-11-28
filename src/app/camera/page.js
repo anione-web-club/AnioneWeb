@@ -54,10 +54,11 @@ const CameraPage = () => {
   };
 
   const savePhoto = () => {
+    // 나중에 firebase storage에 저장하는 코드 추가
     if (photoURL) {
       const link = document.createElement("a");
       link.href = photoURL;
-      link.download = "captured_photo.png";
+      link.download = Date.now().toString() + ".png";
       link.click();
     }
   };
