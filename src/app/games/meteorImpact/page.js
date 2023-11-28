@@ -220,46 +220,40 @@ export default function BreakTile() {
       document.addEventListener("keydown", KeyDownHandler, false);
       document.addEventListener("keyup", KeyUpHandler, false);
 
-      bricks[0][0].meteor = true;
-
       Update();
     }
 
     // 컴포넌트 시작 부분에 다음 상태 변수들을 추가합니다.
-    const warningZones = []; // 워닝 영역 배열
-    const meteorZones = []; // 메테오 영역 배열
+    let warningTimer = 0; // 워닝 영역 타이머
+    let meteorTimer = 0; // 메테오 영역 타이머
 
     function Update() {
       MovePlayer();
 
       // 워닝 영역을 랜덤하게 생성합니다.
-      if (Math.random() < 0.01 && !warningZones.length && !meteorZones.length) {
+      if (!warningTimer && !meteorTimer) {
         GenerateWarningZones();
       }
 
       // 워닝 영역의 지속 시간을 처리합니다.
-      warningZones.forEach((zone) => {
-        if (zone.timer > 0) {
-          zone.timer--;
+      if (warningTimer > 0) {
+        warningTimer--;
 
-          if (zone.timer === 0) {
-            // 워닝에서 메테오 영역으로 전환합니다.
-            TransitionToMeteorZone(zone);
-          }
+        if (warningTimer === 0) {
+          // 워닝에서 메테오 영역으로 전환합니다.
+          TransitionToMeteorZone();
         }
-      });
+      }
 
       // 메테오 영역의 지속 시간을 처리합니다.
-      meteorZones.forEach((zone) => {
-        if (zone.timer > 0) {
-          zone.timer--;
+      if (meteorTimer > 0) {
+        meteorTimer--;
 
-          if (zone.timer === 0) {
-            // 메테오에서 일반 영역으로 전환합니다.
-            TransitionToNormalZone(zone);
-          }
+        if (meteorTimer === 0) {
+          // 메테오에서 일반 영역으로 전환합니다.
+          TransitionToNormalZone();
         }
-      });
+      }
 
       Draw();
 
@@ -274,47 +268,49 @@ export default function BreakTile() {
 
     // 여러 개의 워닝 영역을 생성하는 함수를 추가합니다.
     function GenerateWarningZones() {
-      const numWarningZones = Math.floor(Math.random() * 3) + 1; // 1부터 3까지의 워닝 영역을 생성 (조절 가능)
-
-      for (let i = 0; i < numWarningZones; i++) {
+      for (let i = 0; i < 5; i++) {
+        // 5개의 워닝 영역 생성 (조절 가능)
         const randomC = Math.floor(Math.random() * brickLineCount);
         const randomR = Math.floor(Math.random() * brickLineCount);
 
         if (!bricks[randomC][randomR].warning && !bricks[randomC][randomR].meteor) {
           bricks[randomC][randomR].warning = true;
-          const warningZone = {
-            c: randomC,
-            r: randomR,
-            timer: 60, // 워닝 영역의 지속 시간을 프레임 단위로 설정합니다. (조절 필요)
-          };
-          warningZones.push(warningZone);
+          warningTimer = 60; // 워닝 영역의 지속 시간을 프레임 단위로 설정합니다. (조절 필요)
         }
       }
     }
 
     // 메테오 영역으로 전환하는 함수를 추가합니다.
-    function TransitionToMeteorZone(zone) {
-      const { c, r } = zone;
-
-      if (bricks[c][r].warning) {
-        bricks[c][r].warning = false;
-        bricks[c][r].meteor = true;
-        zone.timer = 120; // 메테오 영역의 지속 시간을 프레임 단위로 설정합니다. (조절 필요)
-        meteorZones.push(zone);
+    function TransitionToMeteorZone() {
+      for (let c = 0; c < brickLineCount; c++) {
+        for (let r = 0; r < brickLineCount; r++) {
+          if (bricks[c][r].warning) {
+            bricks[c][r].warning = false;
+            bricks[c][r].meteor = true;
+            meteorTimer = 120; // 메테오 영역의 지속 시간을 프레임 단위로 설정합니다. (조절 필요)
+          }
+        }
       }
     }
 
     // 일반 영역으로 전환하는 함수를 추가합니다.
-    function TransitionToNormalZone(zone) {
-      const { c, r } = zone;
+    function TransitionToNormalZone() {
+      const meteorArray = [];
 
-      if (bricks[c][r].meteor) {
-        bricks[c][r].meteor = false;
-        meteorZones.splice(meteorZones.indexOf(zone), 1);
+      for (let c = 0; c < brickLineCount; c++) {
+        for (let r = 0; r < brickLineCount; r++) {
+          if (bricks[c][r].meteor) {
+            meteorArray.push(bricks[c][r]);
+          }
+        }
+      }
+
+      const random = Math.floor(Math.random() * (meteorArray.length / 2));
+
+      for (let i = 0; i < random; i++) {
+        meteorArray[i].meteor = false;
       }
     }
-
-    // 나머지 코드는 그대로 유지합니다.
 
     LoadScene();
   }, []);
