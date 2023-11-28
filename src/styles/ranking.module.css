@@ -1,0 +1,16 @@
+.container {
+  text-align: center;
+}
+
+.selectGame {
+  margin: 0 auto;
+  width: 50%;
+  font-size: 1.5em;
+}
+
+.table {
+  margin: 20px auto;
+  width: 50%;
+  font-size: 1.5em;
+  border-spacing: 0 10px;
+}

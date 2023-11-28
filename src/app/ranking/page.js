@@ -3,9 +3,9 @@ import { useInput } from "@/util/hooks";
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { firestore } from "@/api/firebase";
-import "@/styles/ranking.css";
+import styles from "@/styles/ranking.module.css";
 
-export default function () {
+export default function Ranking() {
   const [selectedGame, setSelectedGame] = useInput("DinoRush");
   const [rankings, setRankings] = useState([]);
 
@@ -22,26 +22,23 @@ export default function () {
   }, [selectedGame]);
 
   return (
-    <div id={selectedGame}>
+    <div className={styles.container}>
       <h1>{selectedGame} 랭킹 보드</h1>
-      <h2>게임을 선택해주세요</h2>
-
-      <select onChange={setSelectedGame} id="box">
+      <select onChange={setSelectedGame} className={styles.selectGame}>
         <option value="DinoRush">DinoRush</option>
         <option value="Speedy">Speedy</option>
         <option value="WORRRD">WORRRD</option>
         <option value="MeteorImpact">MeteorImpact</option>
       </select>
-      <div id="RSL">
+      <table className={styles.table}>
         {rankings.map((player, index) => (
-          <div key={index}>
-            <span>{index + 1}등</span>
-            <span>
-              {player.name} - {player.score}
-            </span>
-          </div>
+          <tr key={index}>
+            <td>{index + 1}</td>
+            <td>{player.name}</td>
+            <td>{player.score}</td>
+          </tr>
         ))}
-      </div>
+      </table>
     </div>
   );
 }
