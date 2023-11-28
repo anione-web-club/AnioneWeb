@@ -54,12 +54,15 @@ const CameraPage = () => {
   };
 
   const savePhoto = () => {
-    // 나중에 firebase storage에 저장하는 코드 추가
     if (photoURL) {
-      const link = document.createElement("a");
-      link.href = photoURL;
-      link.download = Date.now().toString() + ".png";
-      link.click();
+      // 사용자에게 파일 이름 입력 받기
+      const fileName = prompt("파일 이름을 입력하세요 (확장자는 자동으로 .png로 설정됩니다):");
+      if (fileName) {
+        const link = document.createElement("a");
+        link.href = photoURL;
+        link.download = `${fileName}.png`;
+        link.click();
+      }
     }
   };
 
