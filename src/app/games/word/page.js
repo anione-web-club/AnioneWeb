@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import styles from "@/styles/games.module.css";
 import { useInput } from "@/util/hooks";
 
 const CanvasComponent = () => {
@@ -7,7 +8,8 @@ const CanvasComponent = () => {
 
   const [input, setInput] = useInput("");
   const [wordCnt, setWordCnt] = useState(30);
-  const [enterEvent, setEnterEvent] = useState(false);
+  const [start, setStart] = useState(false);
+  const [gameOver, setGameOver] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current; //배경
@@ -17,6 +19,14 @@ const CanvasComponent = () => {
     canvas.height = 690;
 
     let randomWord;
+    let sec = 0;
+    let gametimeout;
+
+    function EnterKey(e) {
+      if (e.key === "Enter") {
+        scanWord();
+      }
+    }
 
     function clearCanvas() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -26,19 +36,29 @@ const CanvasComponent = () => {
     }
 
     function RandomWord() {
-      fetch("https://random-word-api.herokuapp.com/word?number=10").then(
-        (res) => {
-          const data = res.json();
-          randomWord = data[0];
-        }
-      );
+      if (start && wordCnt >= 0) {
+        //랜덤 단어
+        fetch("https://random-word-api.herokuapp.com/word")
+          .then((res) => {
+            return res.json();
+          })
+          .then((data) => {
+            randomWord = data[0];
+            printWord();
+            console.log("change");
+          }, 1000);
+      }
     }
 
     function printWord() {
-      ctx.textAlign = "center";
-      ctx.font = "67px Arial";
-      ctx.fillStyle = "#FFFFFF";
-      ctx.fillText(randomWord, canvas.width / 2, canvas.height / 2);
+      if (start) {
+        //단어 표시
+        clearCanvas();
+        ctx.textAlign = "center";
+        ctx.font = "64px Arial";
+        ctx.fillStyle = "#FCFAAC";
+        ctx.fillText(randomWord, canvas.width / 2, canvas.height / 2);
+      }
     }
 
     function scanWord() {
@@ -51,49 +71,84 @@ const CanvasComponent = () => {
 
     function GameTime() {
       //타이머
+      if (start) {
+        if (sec < 60) {
+          sec += 1;
+          console.log("timer");
+          printWord();
+          gametimeout = setTimeout(GameTime, 1000);
+        } else if (sec == 60) {
+          console.log("end");
+          clearTimeout(gametimeout);
+          setGameOver(true);
+          setStart(false);
+        }
+      }
+
+      if (!gameOver) {
+        //시간 표시
+        ctx.textAlign = "center";
+        ctx.font = "70px Arial";
+        ctx.fillStyle = "#FDDAFC";
+        ctx.fillText(sec, canvas.width / 2, canvas.height / 3);
+      } else if (gameOver) {
+        ctx.textAlign = "center";
+        ctx.font = "70px Arial";
+        ctx.fillStyle = "#FDDAFC";
+        ctx.fillText(60, canvas.width / 2, canvas.height / 3);
+        GameOver();
+      }
     }
 
     function GameOver() {
       //게임 오버
+      if (gameOver) {
+        ctx.textAlign = "center";
+        ctx.font = "70px Arial";
+        ctx.fillStyle = "#FCFAAC";
+        ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2);
+      }
     }
 
     function Draw() {
       clearCanvas();
       RandomWord();
-      printWord();
+      GameTime();
     }
 
     Draw();
-  }, [enterEvent]);
+  }, [start, gameOver]);
 
   useEffect(() => {
     console.log(input);
   }, [input]);
 
-  function Submit(event) {
-    event.preventDefault();
-
-    setEnterEvent(!enterEvent);
+  function StartButton() {
+    //게임 시작
+    setInput({ target: { value: "" } });
+    setStart(true);
   }
 
   return (
     <>
       <div>
-        <canvas ref={canvasRef}></canvas>
+        <canvas ref={canvasRef} className={styles.alignCenter} />
       </div>
 
-      <form onSubmit={Submit}>
-        <input type="text" value={input} />
+      <div>
+        <input
+          type="text"
+          value={input}
+          onChange={setInput}
+          className={styles.alignCenter}
+        />
+      </div>
 
-        <button type="submit">시작</button>
-      </form>
+      <button className={styles.alignCenter} onClick={StartButton}>
+        시작
+      </button>
     </>
   );
 };
 
 export default CanvasComponent;
-/*
-    제한시간 1분, 1분안에 랜덤 단어 30개치기, 1분안에 단어 30개 못치면 기록은 무조건 1분 + 게임 끝
-    단어 위에 시간 표시, 0 : 00 부터
-    글자 한개 나오고 더 안나옴 => 엔터키 누르면 확인하고 맞으면 다음 글자 틀리면 그대로 => 반복
-    */

@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
+const nextConfig = {
+  reactStrictMode: false, // 요 부분을 false로 변경
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
