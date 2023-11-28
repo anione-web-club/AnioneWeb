@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useRef } from "react";
 import styles from "@/styles/games.module.css";
+import { doc, setDoc } from "firebase/firestore";
+import { firestore } from "@/api/firebase";
 
 export default function BreakTile() {
   const canvasRef = useRef(null);
@@ -211,6 +213,8 @@ export default function BreakTile() {
       document.removeEventListener("keydown", KeyDownHandler, false);
       document.removeEventListener("keyup", KeyUpHandler, false);
 
+      StopStopwatch();
+
       ctx.fillStyle = "#000";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -229,6 +233,16 @@ export default function BreakTile() {
 
       ctx.font = "20px Arial";
       ctx.fillText("Press any key to restart", canvas.width / 2, canvas.height / 2 + 30);
+
+      const name = prompt("랭킹에 등록할 이름을 입력해주세요.", "");
+      if (name) {
+        const time = (stopwatchElapsedTime / 1000).toFixed(2);
+
+        setDoc(doc(firestore, "meteorImpact", Date.now().toString()), {
+          name: name,
+          time: time,
+        });
+      }
 
       document.addEventListener("keydown", Start, false);
     }
@@ -259,7 +273,7 @@ export default function BreakTile() {
       document.addEventListener("keydown", KeyDownHandler, false);
       document.addEventListener("keyup", KeyUpHandler, false);
 
-      // 스톱워치를 시작합니다.
+      ResetStopwatch();
       StartStopwatch();
 
       Update();
@@ -309,14 +323,18 @@ export default function BreakTile() {
 
     // 여러 개의 워닝 영역을 생성하는 함수를 추가합니다.
     function GenerateWarningZones() {
-      for (let i = 0; i < 5; i++) {
+      const random = Math.floor(Math.random() * 8) + 3; // 워닝 영역의 개수를 랜덤하게 설정합니다. (조절 필요)
+
+      for (let i = 0; i < random; i++) {
         // 5개의 워닝 영역 생성 (조절 가능)
         const randomC = Math.floor(Math.random() * brickLineCount);
         const randomR = Math.floor(Math.random() * brickLineCount);
 
         if (!bricks[randomC][randomR].warning && !bricks[randomC][randomR].meteor) {
           bricks[randomC][randomR].warning = true;
-          warningTimer = 60; // 워닝 영역의 지속 시간을 프레임 단위로 설정합니다. (조절 필요)
+
+          // 시간이 지날수록 워닝 영역의 지속 시간이 짧아집니다.
+          warningTimer = 30 - Math.floor(stopwatchElapsedTime / 1000 / 10);
         }
       }
     }
@@ -328,7 +346,7 @@ export default function BreakTile() {
           if (bricks[c][r].warning) {
             bricks[c][r].warning = false;
             bricks[c][r].meteor = true;
-            meteorTimer = 120; // 메테오 영역의 지속 시간을 프레임 단위로 설정합니다. (조절 필요)
+            meteorTimer = 80; // 메테오 영역의 지속 시간을 프레임 단위로 설정합니다. (조절 필요)
           }
         }
       }
@@ -357,8 +375,11 @@ export default function BreakTile() {
   }, []);
 
   return (
-    <div>
-      <canvas ref={canvasRef} className={styles.alignCenter} />
-    </div>
+    <>
+      <div>
+        <canvas ref={canvasRef} className={styles.alignCenter} />
+      </div>
+      <p>게임을 비정상정으로 종료 시 오류가 발생할 수 있습니다</p>
+    </>
   );
 }
