@@ -5,6 +5,7 @@ const CameraPage = () => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [photoURL, setPhotoURL] = useState(null);
+  const [cameraActive, setCameraActive] = useState(true);
 
   useEffect(() => {
     const startCamera = async () => {
@@ -14,49 +15,57 @@ const CameraPage = () => {
           videoRef.current.srcObject = stream;
         }
       } catch (error) {
-        console.error("Error accessing camera:", error);
+        console.error("카메라 접근 중 오류 발생:", error);
       }
     };
 
-    startCamera();
+    if (cameraActive) {
+      startCamera();
+    }
 
     return () => {
-      // Cleanup - stop the camera when the component is unmounted
       const stream = videoRef.current?.srcObject;
       if (stream) {
         const tracks = stream.getTracks();
         tracks.forEach((track) => track.stop());
       }
     };
-  }, []);
+  }, [cameraActive]);
 
   const capturePhoto = () => {
     if (videoRef.current) {
       const canvas = canvasRef.current;
       const context = canvas.getContext("2d");
 
-      // Set canvas dimensions to match video stream
       canvas.width = videoRef.current.videoWidth;
       canvas.height = videoRef.current.videoHeight;
 
-      // Capture video frame and draw it on the canvas
       context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
 
-      // Convert canvas content to data URL and set as photoURL state
       const dataURL = canvas.toDataURL("image/png");
       setPhotoURL(dataURL);
+      setCameraActive(false); // 사진 찍은 후에 카메라 비활성화
     }
+  };
+
+  const resetCamera = () => {
+    setPhotoURL(null);
+    setCameraActive(true); // 카메라 다시 활성화
   };
 
   return (
     <div>
-      <h1>Camera Page</h1>
-      <video ref={videoRef} autoPlay playsInline />
-      <button onClick={capturePhoto}>Capture Photo</button>
-      {photoURL && (
+      <h1>카메라 페이지</h1>
+      {photoURL ? (
         <div>
-          <h2>Captured Photo</h2>
+          <h2>찍은 사진</h2>
           <img src={photoURL} alt="Captured" />
+          <button onClick={resetCamera}>다시 찍기</button>
+        </div>
+      ) : (
+        <div>
+          <video ref={videoRef} autoPlay playsInline />
+          <button onClick={capturePhoto}>사진 찍기</button>
         </div>
       )}
       <canvas ref={canvasRef} style={{ display: "none" }} />
