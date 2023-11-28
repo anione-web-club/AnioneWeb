@@ -53,14 +53,23 @@ const CameraPage = () => {
     setCameraActive(true); // 카메라 다시 활성화
   };
 
+  const savePhoto = () => {
+    if (photoURL) {
+      const link = document.createElement("a");
+      link.href = photoURL;
+      link.download = "captured_photo.png";
+      link.click();
+    }
+  };
+
   return (
     <div>
       <h1>카메라 페이지</h1>
       {photoURL ? (
         <div>
-          <h2>찍은 사진</h2>
           <img src={photoURL} alt="Captured" />
           <button onClick={resetCamera}>다시 찍기</button>
+          <button onClick={savePhoto}>사진 저장</button>
         </div>
       ) : (
         <div>

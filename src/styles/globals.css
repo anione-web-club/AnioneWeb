@@ -13,7 +13,17 @@ body {
   min-height: calc(100% - 55px);
 }
 
-* {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: white;
+}
+
+p,
+li {
   color: rgb(188, 193, 203);
 }
 
