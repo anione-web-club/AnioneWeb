@@ -19,47 +19,42 @@ export default function BreakTile() {
       canvas.height = 420;
     }
 
-    const background = new Image();
-    background.src = imagePath + "background.png";
-
-    const player = new Image();
-    player.src = imagePath + "dino_left.png";
-
-    const playerSize = canvas.width / 10;
-    let x = canvas.width / 2;
-    let y = canvas.height / 2;
+    const playerSize = canvas.width / 12;
+    let playerX = canvas.width / 2 - playerSize / 2;
+    let playerY = canvas.height / 2 - playerSize / 2;
     const moveSpeed = playerSize / 10;
 
-    let viewPoint = "Left";
+    const brickLineCount = 10;
+    const brickSize = canvas.width / brickLineCount;
+    const bricks = [];
 
     let upPressed = false;
     let downPressed = false;
     let leftPressed = false;
     let rightPressed = false;
 
-    const brickLineCount = 10;
-    const brickSize = canvas.width / brickLineCount;
-    const bricks = [];
+    let lastViewPoint = "Down";
 
-    const warning = new Image();
-    warning.src = imagePath + "shadow.png";
-    const meteor = new Image();
-    meteor.src = imagePath + "meteor.png";
+    // 디버그용 키 입력 감지
+    //document.addEventListener("keydown", EventTest, false);
 
-    let warningTime = 2000;
-    let meteorTime = 1000;
-    let removeTime = 1500;
+    //function EventTest(event) {
+    //  console.log(event.key);
+    //}
 
-    let warningID = null;
-    let meteorID = null;
-    let removeMeteorID = null;
-
-    let isDead = false;
-
+    // 블럭 관련 변수 생성
     for (let c = 0; c < brickLineCount; c++) {
       bricks[c] = [];
       for (let r = 0; r < brickLineCount; r++) {
-        bricks[c][r] = { warning: false, meteor: false };
+        const random = Math.floor(Math.random() * 3) + 1;
+
+        bricks[c][r] = {
+          x: c * brickSize,
+          y: r * brickSize,
+          randomBrick: random,
+          warning: false,
+          meteor: false,
+        };
       }
     }
 
@@ -86,186 +81,118 @@ export default function BreakTile() {
       ctx.textAlign = "center";
       ctx.fillText("Break Tile", canvas.width / 2, canvas.height / 2);
 
-      ctx.fillStyle = "#fff";
       ctx.font = "20px Arial";
-      ctx.textAlign = "center";
       ctx.fillText("Press any key to start", canvas.width / 2, canvas.height / 2 + 30);
 
-      document.addEventListener("keydown", GameStart);
+      document.addEventListener("keydown", Start, false);
     }
 
-    function GameStart() {
-      document.removeEventListener("keydown", GameStart);
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      ctx.fillStyle = "#000";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      ctx.fillStyle = "#fff";
-      ctx.font = "30px Arial";
-      ctx.textAlign = "center";
-
-      warningID = setTimeout(CreateWarning, warningTime);
-      GameManager();
-    }
-
-    function KeyDownHandler(e) {
-      if (e.key === "Up" || e.key === "ArrowUp") {
+    function KeyDownHandler(event) {
+      if (event.key == "Up" || event.key == "ArrowUp") {
         upPressed = true;
-        player.src = imagePath + "dino_up.png";
-        viewPoint = "Up";
-      }
-      if (e.key === "Down" || e.key === "ArrowDown") {
+        lastViewPoint = "Up";
+      } else if (event.key == "Down" || event.key == "ArrowDown") {
         downPressed = true;
-        player.src = imagePath + "dino_down.png";
-        viewPoint = "Down";
-      }
-      if (e.key === "Left" || e.key === "ArrowLeft") {
+        lastViewPoint = "Down";
+      } else if (event.key == "Left" || event.key == "ArrowLeft") {
         leftPressed = true;
-        player.src = imagePath + "dino_left.png";
-        viewPoint = "Left";
-      }
-      if (e.key === "Right" || e.key === "ArrowRight") {
+        lastViewPoint = "Left";
+      } else if (event.key == "Right" || event.key == "ArrowRight") {
         rightPressed = true;
-        player.src = imagePath + "dino_right.png";
-        viewPoint = "Right";
+        lastViewPoint = "Right";
       }
     }
 
-    function KeyUpHandler(e) {
-      if (e.key === "Up" || e.key === "ArrowUp") upPressed = false;
-      if (e.key === "Down" || e.key === "ArrowDown") downPressed = false;
-      if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = false;
-      if (e.key === "Right" || e.key === "ArrowRight") rightPressed = false;
+    function KeyUpHandler(event) {
+      if (event.key == "Up" || event.key == "ArrowUp") upPressed = false;
+      else if (event.key == "Down" || event.key == "ArrowDown") downPressed = false;
+      else if (event.key == "Left" || event.key == "ArrowLeft") leftPressed = false;
+      else if (event.key == "Right" || event.key == "ArrowRight") rightPressed = false;
     }
 
     function MovePlayer() {
-      if (upPressed && y > 0) y -= moveSpeed;
-      else if (downPressed && y < canvas.height - playerSize) y += moveSpeed;
-      else if (leftPressed && x > 0) x -= moveSpeed;
-      else if (rightPressed && x < canvas.width - playerSize) x += moveSpeed;
+      if (upPressed && playerY > 0) playerY -= moveSpeed;
+      if (downPressed && playerY < canvas.height - playerSize) playerY += moveSpeed;
+      if (leftPressed && playerX > 0) playerX -= moveSpeed;
+      if (rightPressed && playerX < canvas.width - playerSize) playerX += moveSpeed;
     }
 
-    function CreateWarning() {
-      const warningCount = Math.floor(Math.random() * 5) + 2; // 2 ~ 6
-
-      for (let i = 0; i < warningCount; i++) {
-        const c = Math.floor(Math.random() * brickLineCount);
-        const r = Math.floor(Math.random() * brickLineCount);
-
-        bricks[c][r].warning = true;
-      }
-
-      if (warningTime > meteorTime + 300) warningTime -= 100;
-      if (warningTime <= meteorTime + 300 && meteorTime > 500) meteorTime -= 100;
-      if (meteorTime <= 500 && removeTime > 500) removeTime -= 100;
-
-      warningID = setTimeout(CreateWarning, warningTime);
-      meteorID = setTimeout(CreateMeteor, meteorTime);
-    }
-
-    function CreateMeteor() {
+    function DrawBricks() {
       for (let c = 0; c < brickLineCount; c++) {
         for (let r = 0; r < brickLineCount; r++) {
-          if (bricks[c][r].warning) {
-            bricks[c][r].warning = false;
-            bricks[c][r].meteor = true;
+          const brick = bricks[c][r];
+
+          const brickImage = new Image();
+          brickImage.src = imagePath + "brick/" + brick.randomBrick + ".png";
+
+          ctx.drawImage(brickImage, brick.x, brick.y, brickSize, brickSize);
+
+          if (brick.warning) {
+            const warningImage = new Image();
+            warningImage.src = imagePath + "warning.png";
+
+            ctx.drawImage(warningImage, brick.x, brick.y, brickSize, brickSize);
           }
-        }
-      }
 
-      removeMeteorID = setTimeout(RemoveMeteor, removeTime);
-    }
+          if (brick.meteor) {
+            const meteorImage = new Image();
+            meteorImage.src = imagePath + "meteor.png";
 
-    function RemoveMeteor() {
-      const removeCount = Math.floor(Math.random() * 5) + 1; // 1 ~ 5
-
-      const meteorIndices = [];
-
-      for (let c = 0; c < brickLineCount; c++) {
-        for (let r = 0; r < brickLineCount; r++) {
-          if (bricks[c][r].meteor) {
-            meteorIndices.push({ c, r });
-          }
-        }
-      }
-
-      const effectiveRemoveCount = Math.min(removeCount, meteorIndices.length);
-      for (let i = 0; i < effectiveRemoveCount; i++) {
-        const randomIndex = Math.floor(Math.random() * meteorIndices.length);
-        const { c, r } = meteorIndices[randomIndex];
-        bricks[c][r].meteor = false;
-
-        meteorIndices.splice(randomIndex, 1);
-      }
-    }
-
-    function ClearTimeouts() {
-      clearTimeout(warningID);
-      clearTimeout(meteorID);
-      clearTimeout(removeMeteorID);
-    }
-
-    function DrawBackground() {
-      ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-    }
-
-    function DrawTiles() {
-      for (let c = 0; c < brickLineCount; c++) {
-        for (let r = 0; r < brickLineCount; r++) {
-          const brickX = c * brickSize;
-          const brickY = r * brickSize;
-
-          if (bricks[c][r].warning) {
-            ctx.drawImage(warning, brickX, brickY, brickSize, brickSize);
-          } else if (bricks[c][r].meteor) {
-            ctx.drawImage(meteor, brickX, brickY, brickSize, brickSize);
+            ctx.drawImage(meteorImage, brick.x, brick.y, brickSize, brickSize);
           }
         }
       }
     }
 
     function DrawPlayer() {
-      //if (viewPoint === "Up" && viewPoint === "Down") ctx.drawImage(player, x, y, playerSize, playerSize * 2);
-      //else if (viewPoint === "Left" && viewPoint === "Right")
-      //ctx.drawImage(player, x, y, playerSize * 2, playerSize);
-      ctx.drawImage(player, x, y, playerSize, playerSize);
+      const playerImage = new Image();
+      playerImage.src = imagePath + "dino/" + lastViewPoint.toLowerCase() + ".png";
+
+      if (lastViewPoint == "Up" || lastViewPoint == "Down")
+        ctx.drawImage(playerImage, playerX, playerY, playerSize / 1.5, playerSize);
+      else if (lastViewPoint == "Left" || lastViewPoint == "Right")
+        ctx.drawImage(playerImage, playerX, playerY, playerSize * 1.5, playerSize);
     }
 
-    function CheckCollision() {
-      // 플레이어와 블럭의 충돌 판정
-      const playerLeft = x;
-      const playerRight = x + playerSize;
-      const playerTop = y;
-      const playerBottom = y + playerSize;
+    function Draw() {
+      DrawBricks();
+      DrawPlayer();
+    }
+
+    function CollisionDetection() {
+      const playerCenterX = playerX + playerSize / 2;
+      const playerCenterY = playerY + playerSize / 2;
+      const playerRadius = playerSize / 2;
 
       for (let c = 0; c < brickLineCount; c++) {
         for (let r = 0; r < brickLineCount; r++) {
-          const brickX = c * brickSize;
-          const brickY = r * brickSize;
+          const brick = bricks[c][r];
 
-          if (bricks[c][r].meteor) {
-            const brickLeft = brickX;
-            const brickRight = brickX + brickSize;
-            const brickTop = brickY;
-            const brickBottom = brickY + brickSize;
+          if (brick.meteor) {
+            const meteorCenterX = brick.x + brickSize / 2;
+            const meteorCenterY = brick.y + brickSize / 2;
+            const meteorRadius = brickSize / 2;
 
-            if (
-              playerLeft < brickRight &&
-              playerRight > brickLeft &&
-              playerTop < brickBottom &&
-              playerBottom > brickTop
-            ) {
-              isDead = true;
+            const distanceX = Math.abs(playerCenterX - meteorCenterX);
+            const distanceY = Math.abs(playerCenterY - meteorCenterY);
+
+            const combinedRadius = playerRadius + meteorRadius;
+
+            if (distanceX < combinedRadius && distanceY < combinedRadius) {
+              return true;
             }
           }
         }
       }
+
+      return false;
     }
 
     function GameOver() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      document.removeEventListener("keydown", KeyDownHandler, false);
+      document.removeEventListener("keyup", KeyUpHandler, false);
 
       ctx.fillStyle = "#000";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -274,28 +201,35 @@ export default function BreakTile() {
       ctx.font = "30px Arial";
       ctx.textAlign = "center";
       ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2);
+
+      ctx.fillStyle = "#fff";
+      ctx.font = "20px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText("Press any key to restart", canvas.width / 2, canvas.height / 2 + 30);
+
+      document.addEventListener("keydown", Start, false);
     }
 
-    function GameManager() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    function Start() {
+      document.removeEventListener("keydown", Start, false);
 
-      document.addEventListener("keydown", KeyDownHandler);
-      document.addEventListener("keyup", KeyUpHandler);
+      document.addEventListener("keydown", KeyDownHandler, false);
+      document.addEventListener("keyup", KeyUpHandler, false);
 
+      Update();
+    }
+
+    function Update() {
       MovePlayer();
 
-      DrawBackground();
-      DrawTiles();
-      DrawPlayer();
+      Draw();
 
-      CheckCollision();
-
-      if (isDead) {
+      if (CollisionDetection()) {
         GameOver();
         return;
       }
 
-      requestAnimationFrame(GameManager);
+      requestAnimationFrame(Update);
     }
 
     LoadScene();
