@@ -19,6 +19,10 @@ const SideMenuList = [
     name: "Guest Book",
     path: "/guestbook",
   },
+  {
+    name: "Camera",
+    path: "/camera",
+  },
 ];
 
 export default function SideMenu({ isOpen }) {
