@@ -78,7 +78,7 @@ const CameraPage = () => {
       {photoURL ? (
         <div>
           {/* 이미지 스타일에도 좌우 반전을 적용 */}
-          <img src={photoURL} alt="Captured" style={{ transform: "scaleX(-1)" }} />
+          <img src={photoURL} alt="Captured" />
           <button onClick={resetCamera}>다시 찍기</button>
           <button onClick={savePhoto}>사진 저장</button>
         </div>

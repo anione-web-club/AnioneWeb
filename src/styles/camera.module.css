@@ -4,6 +4,10 @@
   margin: 0 auto;
 }
 
+.container > div > img {
+  transform: scaleX(-1);
+}
+
 .container > div > video {
   width: 100%;
   max-height: calc(768px / 3 * 4);

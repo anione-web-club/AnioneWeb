@@ -32,6 +32,7 @@ header {
   height: 75px;
   position: fixed;
   background-color: rgb(6, 6, 33);
+  z-index: 1;
 }
 
 .headerMargin {
