@@ -238,9 +238,9 @@ export default function BreakTile() {
       if (name) {
         const time = (stopwatchElapsedTime / 1000).toFixed(2);
 
-        setDoc(doc(firestore, "meteorImpact", Date.now().toString()), {
+        setDoc(doc(firestore, "MeteorImpact", Date.now().toString()), {
           name: name,
-          time: time,
+          score: time,
         });
       }
 
