@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import styles from "@/styles/camera.module.css";
 
 const CameraPage = () => {
   const videoRef = useRef(null);
@@ -37,8 +38,13 @@ const CameraPage = () => {
       const canvas = canvasRef.current;
       const context = canvas.getContext("2d");
 
-      canvas.width = videoRef.current.videoWidth;
-      canvas.height = videoRef.current.videoHeight;
+      if (window.innerWidth < 768) {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerWidth * 0.75;
+      } else {
+        canvas.width = 768;
+        canvas.height = 576;
+      }
 
       context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
 
@@ -67,11 +73,12 @@ const CameraPage = () => {
   };
 
   return (
-    <div>
+    <div className={styles.container}>
       <h1>카메라 페이지</h1>
       {photoURL ? (
         <div>
-          <img src={photoURL} alt="Captured" />
+          {/* 이미지 스타일에도 좌우 반전을 적용 */}
+          <img src={photoURL} alt="Captured" style={{ transform: "scaleX(-1)" }} />
           <button onClick={resetCamera}>다시 찍기</button>
           <button onClick={savePhoto}>사진 저장</button>
         </div>

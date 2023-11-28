@@ -1,0 +1,19 @@
+.container {
+  width: 100%;
+  max-width: 768px;
+  margin: 0 auto;
+}
+
+.container > div > video {
+  width: 100%;
+  max-height: calc(768px / 3 * 4);
+  transform: scaleX(-1);
+}
+
+.container > div > button {
+  width: 100%;
+  height: 50px;
+  display: block;
+  margin: 20px auto;
+  font-size: 2em;
+}
