@@ -35,6 +35,13 @@ export default function BreakTile() {
 
     let lastViewPoint = "Down";
 
+    let warningTimer = 0; // 워닝 영역 타이머
+    let meteorTimer = 0; // 메테오 영역 타이머
+
+    let stopwatchRunning = false; // 스톱워치가 실행 중인지 여부
+    let stopwatchStartTime = 0; // 스톱워치 시작 시간
+    let stopwatchElapsedTime = 0; // 스톱워치 경과 시간
+
     // 디버그용 키 입력 감지
     //document.addEventListener("keydown", EventTest, false);
 
@@ -69,6 +76,32 @@ export default function BreakTile() {
       ctx.fillText("Press any key to start", canvas.width / 2, canvas.height / 2 + 30);
 
       document.addEventListener("keydown", Start, false);
+    }
+
+    // 스톱워치를 시작하는 함수를 추가합니다.
+    function StartStopwatch() {
+      stopwatchRunning = true;
+      stopwatchStartTime = Date.now() - stopwatchElapsedTime;
+    }
+
+    // 스톱워치를 정지하는 함수를 추가합니다.
+    function StopStopwatch() {
+      stopwatchRunning = false;
+      stopwatchElapsedTime = Date.now() - stopwatchStartTime;
+    }
+
+    // 스톱워치를 초기화하는 함수를 추가합니다.
+    function ResetStopwatch() {
+      stopwatchRunning = false;
+      stopwatchStartTime = 0;
+      stopwatchElapsedTime = 0;
+    }
+
+    // 스톱워치를 업데이트하는 함수를 추가합니다.
+    function UpdateStopwatch() {
+      if (stopwatchRunning) {
+        stopwatchElapsedTime = Date.now() - stopwatchStartTime;
+      }
     }
 
     function KeyDownHandler(event) {
@@ -182,13 +215,19 @@ export default function BreakTile() {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       ctx.fillStyle = "#fff";
-      ctx.font = "30px Arial";
       ctx.textAlign = "center";
+
+      ctx.font = "20px Arial";
+      ctx.fillText(
+        "Time: " + (stopwatchElapsedTime / 1000).toFixed(2) + "s",
+        canvas.width / 2,
+        canvas.height / 2 - 30
+      );
+
+      ctx.font = "30px Arial";
       ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2);
 
-      ctx.fillStyle = "#fff";
       ctx.font = "20px Arial";
-      ctx.textAlign = "center";
       ctx.fillText("Press any key to restart", canvas.width / 2, canvas.height / 2 + 30);
 
       document.addEventListener("keydown", Start, false);
@@ -220,12 +259,11 @@ export default function BreakTile() {
       document.addEventListener("keydown", KeyDownHandler, false);
       document.addEventListener("keyup", KeyUpHandler, false);
 
+      // 스톱워치를 시작합니다.
+      StartStopwatch();
+
       Update();
     }
-
-    // 컴포넌트 시작 부분에 다음 상태 변수들을 추가합니다.
-    let warningTimer = 0; // 워닝 영역 타이머
-    let meteorTimer = 0; // 메테오 영역 타이머
 
     function Update() {
       MovePlayer();
@@ -254,6 +292,9 @@ export default function BreakTile() {
           TransitionToNormalZone();
         }
       }
+
+      // 스톱워치를 업데이트합니다.
+      UpdateStopwatch();
 
       Draw();
 
