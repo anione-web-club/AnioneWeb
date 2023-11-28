@@ -3,6 +3,7 @@ import { useInput } from "@/util/hooks";
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { firestore } from "@/api/firebase";
+import "@/styles/ranking.css";
 
 export default function () {
   const [selectedGame, setSelectedGame] = useInput("DinoRush");
@@ -21,21 +22,26 @@ export default function () {
   }, [selectedGame]);
 
   return (
-    <div>
+    <div id={selectedGame}>
       <h1>{selectedGame} 랭킹 보드</h1>
-      <select onChange={setSelectedGame}>
+      <h2>게임을 선택해주세요</h2>
+
+      <select onChange={setSelectedGame} id="box">
         <option value="DinoRush">DinoRush</option>
         <option value="Speedy">Speedy</option>
         <option value="WORRRD">WORRRD</option>
         <option value="MeteorImpact">MeteorImpact</option>
       </select>
-      <ol>
+      <div id="RSL">
         {rankings.map((player, index) => (
-          <li key={index}>
-            {player.name} - {player.score}
-          </li>
+          <div key={index}>
+            <span>{index + 1}등</span>
+            <span>
+              {player.name} - {player.score}
+            </span>
+          </div>
         ))}
-      </ol>
+      </div>
     </div>
   );
 }
