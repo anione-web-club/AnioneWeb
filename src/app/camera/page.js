@@ -98,7 +98,6 @@ const CameraPage = () => {
 
   useEffect(() => {
     const selectedSticker = `sticker_${selectedStickerIndex}.png`;
-    console.log(selectedSticker);
 
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
@@ -114,13 +113,26 @@ const CameraPage = () => {
         const stickerImage = new Image();
         stickerImage.src = `/images/camera/${selectedSticker}`;
 
+        // stickerPosition.x, stickerPosition.y 최소 최대 비례 반전
+        // ex) 0 ~ 768 -> 768 ~ 0
+        const x = canvas.width - stickerPosition.x;
+        const y = canvas.height - stickerPosition.y;
+
         stickerImage.onload = () => {
-          context.drawImage(stickerImage, stickerPosition.x, stickerPosition.y, 100, 100);
+          context.drawImage(stickerImage, x, y, 100, 100);
           captureCanvas();
         };
       }
     };
   }, [selectedStickerIndex, stickerPosition]);
+
+  function handleStickerPositionChange(event) {
+    const { name, value } = event.target;
+    setStickerPosition({
+      ...stickerPosition,
+      [name]: value,
+    });
+  }
 
   return (
     <div className={styles.container}>
@@ -144,6 +156,22 @@ const CameraPage = () => {
               ))}
             </div>
           </div>
+          <input
+            type="range"
+            min="0"
+            max="768"
+            name="x"
+            value={stickerPosition.x}
+            onChange={handleStickerPositionChange}
+          />
+          <input
+            type="range"
+            min="0"
+            max="576"
+            name="y"
+            value={stickerPosition.y}
+            onChange={handleStickerPositionChange}
+          />
           <button onClick={resetCamera}>다시 찍기</button>
           <button onClick={savePhoto}>사진 저장</button>
         </div>
