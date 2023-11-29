@@ -1,133 +1,151 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import styles from "@/styles/games.module.css";
-import { useInput } from "@/util/hooks";
+//import { useInput } from "@/util/hooks";
 
 const CanvasComponent = () => {
   const canvasRef = useRef(null);
-
-  const [input, setInput] = useInput("");
-  const [wordCnt, setWordCnt] = useState(30);
+  const [input, setInput] = useState("");
   const [start, setStart] = useState(false);
   const [gameOver, setGameOver] = useState(false);
+  const [gameWin, setGameWin] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current; //배경
     const ctx = canvas.getContext("2d");
 
-    canvas.width = 420;
-    canvas.height = 690;
+    if (window.innerWidth <= 768) {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerWidth;
+    } else {
+      canvas.width = 420;
+      canvas.height = 420;
+    }
 
-    let randomWord;
     let sec = 0;
+    let wordCnt = 7;
     let gametimeout;
+    let randomWord;
 
-    function EnterKey(e) {
-      if (e.key === "Enter") {
-        scanWord();
-      }
-    }
-
-    function clearCanvas() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      ctx.fillStyle = "#FFC0CB";
-      ctx.fillRect(700, 0, 1200, 690);
-    }
-
-    function RandomWord() {
-      if (start && wordCnt >= 0) {
-        //랜덤 단어
-        fetch("https://random-word-api.herokuapp.com/word")
-          .then((res) => {
-            return res.json();
-          })
-          .then((data) => {
-            randomWord = data[0];
-            printWord();
-            console.log("change");
-          }, 1000);
-      }
-    }
-
-    function printWord() {
-      if (start) {
-        //단어 표시
-        clearCanvas();
-        ctx.textAlign = "center";
-        ctx.font = "64px Arial";
-        ctx.fillStyle = "#FCFAAC";
-        ctx.fillText(randomWord, canvas.width / 2, canvas.height / 2);
-      }
-    }
-
-    function scanWord() {
-      if (input === randomWord) {
-        setWordCnt(wordCnt - 1);
-        setInput({ target: { value: "" } });
-        printWord();
+    async function RandomWord() {
+      if (wordCnt > 0) {
+        if (start) {
+          const res = await fetch("https://random-word-api.herokuapp.com/word");
+          const data = await res.json();
+          randomWord = data[0];
+          console.log(randomWord);
+        }
       }
     }
 
     function GameTime() {
-      //타이머
       if (start) {
-        if (sec < 60) {
+        if (wordCnt === 60) {
+          console.log("win");
+          setGameWin(true);
+          setStart(false);
+          GameEnd();
+        } else if (sec < 60) {
           sec += 1;
-          console.log("timer");
-          printWord();
+          console.log(sec);
           gametimeout = setTimeout(GameTime, 1000);
-        } else if (sec == 60) {
+        } else if (sec === 10) {
           console.log("end");
-          clearTimeout(gametimeout);
           setGameOver(true);
           setStart(false);
+          clearTimeout(gametimeout);
         }
       }
 
       if (!gameOver) {
-        //시간 표시
+        ClearCanvas();
         ctx.textAlign = "center";
         ctx.font = "70px Arial";
-        ctx.fillStyle = "#FDDAFC";
-        ctx.fillText(sec, canvas.width / 2, canvas.height / 3);
+        ctx.fillStyle = "#000000";
+        ctx.fillText(sec, canvas.width / 2, 100);
       } else if (gameOver) {
+        ClearCanvas();
         ctx.textAlign = "center";
         ctx.font = "70px Arial";
-        ctx.fillStyle = "#FDDAFC";
-        ctx.fillText(60, canvas.width / 2, canvas.height / 3);
-        GameOver();
+        ctx.fillStyle = "#000000";
+        ctx.fillText(60, canvas.width / 2, 100);
+        GameEnd();
+      } else if (gameWin) {
+        ClearCanvas();
+        GameEnd();
       }
     }
 
-    function GameOver() {
-      //게임 오버
+    function CheckWord() {
+      if (input != randomWord) {
+        wordCnt -= 1;
+        RandomWord();
+      }
+    }
+
+    function EnterKey(e) {
+      if (e.key === "Enter") {
+        console.log({ input });
+        CheckWord();
+        setInput("");
+        console.log("enter");
+      }
+    }
+
+    function GameEnd() {
       if (gameOver) {
         ctx.textAlign = "center";
-        ctx.font = "70px Arial";
+        ctx.font = "67px Arial";
+        ctx.fillStyle = "#D1180B";
+        ctx.fillText("GAME OVER", canvas.width / 2, 200);
+      }
+      if (gameWin) {
+        ctx.textAlign = "center";
+        ctx.font = "57px Arial";
         ctx.fillStyle = "#FCFAAC";
-        ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2);
+        ctx.fillText("Clear Time : ", canvas.width / 2, 200);
+        ctx.fillText(sec, canvas.width / 3, 200);
+      }
+    }
+
+    function ClearCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "#FFC0CB";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      if (start) {
+        ctx.textAlign = "center";
+        ctx.font = "50px Arial";
+        ctx.fillStyle = "#000000";
+        ctx.fillText(randomWord, canvas.width / 2, 200);
       }
     }
 
     function Draw() {
-      clearCanvas();
-      RandomWord();
+      ClearCanvas();
       GameTime();
+      RandomWord();
+      GameEnd();
     }
 
     Draw();
-  }, [start, gameOver]);
+
+    window.addEventListener("keydown", EnterKey);
+
+    return () => {
+      window.removeEventListener("keydown", EnterKey);
+    };
+  }, [start, gameOver, gameWin]);
+
+  function StartButton() {
+    setInput("");
+    setStart(true);
+  }
 
   useEffect(() => {
     console.log(input);
   }, [input]);
-
-  function StartButton() {
-    //게임 시작
-    setInput({ target: { value: "" } });
-    setStart(true);
-  }
 
   return (
     <>
@@ -139,7 +157,7 @@ const CanvasComponent = () => {
         <input
           type="text"
           value={input}
-          onChange={setInput}
+          onChange={(e) => setInput(e.target.value)}
           className={styles.alignCenter}
         />
       </div>
