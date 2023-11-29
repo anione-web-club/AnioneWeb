@@ -375,11 +375,8 @@ export default function BreakTile() {
   }, []);
 
   return (
-    <>
-      <div>
-        <canvas ref={canvasRef} className={styles.alignCenter} />
-      </div>
-      <p>게임을 비정상정으로 종료 시 오류가 발생할 수 있습니다</p>
-    </>
+    <div>
+      <canvas ref={canvasRef} className={styles.alignCenter} />
+    </div>
   );
 }
