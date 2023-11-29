@@ -22,6 +22,7 @@ export default function Projects() {
     { path: "/projects/quiz", name: "맞춰라! 퀴즈" },
     { path: "/projects/escape-maze", name: "미로 탈출" },
     { path: "/projects/dino-game", name: "구글 공룡게임" },
+    { path: "/projects/tetris", name: "테트리스" },
   ];
 
   return (
