@@ -4,8 +4,9 @@
 
 .title {
   text-align: center;
-  margin-top: 0;
   color: white;
+  font-size: 4rem;
+  margin: 50px 0 50px 0;
 }
 
 /* ClubInfo Components */
@@ -16,6 +17,7 @@
 
 .flex > * {
   padding: 0 20px;
+  margin: 50px 0 50px 0;
 }
 
 @media screen and (max-width: 768px) {
@@ -34,7 +36,7 @@
 @media screen and (min-width: 769px) {
   .flex {
     display: flex;
-    margin: 0 20px;
+    margin: 0 50px;
   }
 }
 
@@ -45,4 +47,5 @@
 .text {
   color: rgb(188, 193, 203);
   line-height: 1.75;
+  margin: 20px 0;
 }
