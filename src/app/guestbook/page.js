@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useInput } from "@/util/hooks";
 import { firestore } from "@/api/firebase";
 import { collection, doc, getDocs, setDoc } from "firebase/firestore";
+import styles from "@/styles/guestbook.module.css";
 
 export default function GuestBook() {
   const [comment, setComment] = useInput("");
@@ -30,19 +31,23 @@ export default function GuestBook() {
 
   return (
     <div>
-      <h1>Guest Book</h1>
-
+      <div className={styles.cent}>
+        <h1>Guest Book</h1>
+        <h2>소중한 한마디 남겨주세요</h2>
+      </div>
       <div>
         {comments.map((comment, index) => (
-          <div key={index}>
+          <div className={styles.guestchat} key={index}>
             <p>{comment.text}</p>
           </div>
         ))}
       </div>
       <div>
-        <form onSubmit={Submit}>
+        <form className={styles.guestoption} onSubmit={Submit}>
           <input type="text" value={comment} onChange={setComment} />
-          <button type="submit">Submit</button>
+          <button type="submit" className={styles.button}>
+            남기기!
+          </button>
         </form>
       </div>
     </div>
