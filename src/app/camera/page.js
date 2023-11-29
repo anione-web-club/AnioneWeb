@@ -22,8 +22,6 @@ const CameraPage = () => {
       canvas.height = 576;
     }
 
-    console.log("캔버스 크기:", canvas.width, canvas.height);
-
     setStickerPosition({
       x: canvas.width / 2,
       y: canvas.height / 2,
@@ -94,34 +92,34 @@ const CameraPage = () => {
   };
 
   const handleStickerClick = (index) => {
-    setSelectedStickerIndex(index);
+    if (selectedStickerIndex === index) setSelectedStickerIndex(null);
+    else setSelectedStickerIndex(index);
   };
 
   useEffect(() => {
     const selectedSticker = `sticker_${selectedStickerIndex}.png`;
-    console.log("선택된 스티커:", selectedSticker);
+    console.log(selectedSticker);
 
-    if (selectedStickerIndex) {
-      const canvas = canvasRef.current;
-      const context = canvas.getContext("2d");
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
 
-      const stickerImage = new Image();
-      stickerImage.src = `/images/camera/${selectedSticker}`;
-      console.log(stickerImage.src);
+    const backupImage = new Image();
+    backupImage.src = photoURLBackup;
+    backupImage.onload = () => {
+      context.drawImage(backupImage, 0, 0, canvas.width, canvas.height);
 
-      stickerImage.onload = () => {
-        context.clearRect(0, 0, canvas.width, canvas.height);
+      captureCanvas();
 
-        const backupImage = new Image();
-        backupImage.src = photoURLBackup;
-        backupImage.onload = () => {
-          context.drawImage(backupImage, 0, 0, canvas.width, canvas.height);
+      if (selectedStickerIndex) {
+        const stickerImage = new Image();
+        stickerImage.src = `/images/camera/${selectedSticker}`;
 
+        stickerImage.onload = () => {
           context.drawImage(stickerImage, stickerPosition.x, stickerPosition.y, 100, 100);
           captureCanvas();
         };
-      };
-    }
+      }
+    };
   }, [selectedStickerIndex, stickerPosition]);
 
   return (
