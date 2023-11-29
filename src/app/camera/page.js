@@ -181,7 +181,7 @@ const CameraPage = () => {
           <button onClick={capturePhoto}>사진 찍기</button>
         </div>
       )}
-      <canvas ref={canvasRef} />
+      <canvas ref={canvasRef} className={styles.displayNone} />
     </div>
   );
 };
