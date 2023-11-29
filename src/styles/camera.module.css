@@ -21,3 +21,25 @@
   margin: 20px auto;
   font-size: 2em;
 }
+
+.displayNone {
+  display: none;
+}
+
+.stickerToolbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.sticker {
+  width: 9%;
+  height: auto;
+  background-color: white;
+}
+
+.selected {
+  border: 2px solid blue;
+}
