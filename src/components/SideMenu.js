@@ -19,6 +19,10 @@ const SideMenuList = [
     name: "Guest Book",
     path: "/guestbook",
   },
+  {
+    name: "Leaflet",
+    path: "/leaflet",
+  },
 ];
 
 export default function SideMenu({ isOpen }) {

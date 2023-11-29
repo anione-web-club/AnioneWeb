@@ -1,0 +1,32 @@
+.background {
+  background-color: rgb(254, 229, 210);
+}
+
+.title {
+  margin: 0;
+  padding: 32px 0;
+}
+
+.positionList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.positionItem {
+  margin: 20px;
+}
+
+.positionImg {
+  /* 버튼 태그 스타일 초기화 */
+  border: none;
+  background-color: transparent;
+}
+
+.marginAuto {
+  display: block;
+  margin: 0 auto;
+}
