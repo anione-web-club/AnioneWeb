@@ -5,13 +5,23 @@ export default function Projects() {
   const projects = [
     { path: "/projects/speedy", name: "Speedy" },
     { path: "/projects/worrrd", name: "WORRRD!" },
+    { path: "/projects/meteor-impact", name: "MeteorImpact" },
+    { path: "/projects/", name: "기숙사 102호" },
+
+    { path: "/projects/anione-gpt", name: "애니원GPT" },
+    { path: "/projects/camera", name: "웹생네컷" },
+
     { path: "/projects/gunchemist", name: "건케미스트" },
-    { path: "/projects/projectHope", name: "Project: Hope" },
-    { path: "/projects/spikeRush", name: "SpikeRush" },
-    { path: "/projects/dinoRush", name: "DinoRush" },
-    { path: "/projects/rhythmGame", name: "리듬게임" },
+
+    { path: "/projects/spike-rush", name: "SpikeRush" },
+    { path: "/projects/dino-rush", name: "DinoRush" },
+    { path: "/projects/ordinary-rhythm", name: "OrdinaryRhythm" },
+    { path: "/projects/stars-way", name: "별들의 길" },
+    { path: "/projects/elite-pilot", name: "엘리트 파일럿" },
+
     { path: "/projects/quiz", name: "맞춰라! 퀴즈" },
-    { path: "/projects/escapeMaze", name: "미로 탈출" },
+    { path: "/projects/escape-maze", name: "미로 탈출" },
+    { path: "/projects/dino-game", name: "구글 공룡게임" },
   ];
 
   return (
