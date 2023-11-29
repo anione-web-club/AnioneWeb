@@ -17,7 +17,7 @@ export default function Header() {
     <header>
       <Layout>
         <Link href="/">
-          <Image src="/logo.png" alt="로고" width={250} height={75} />
+          <Image src="/images/logo.png" alt="로고" width={250} height={75} />
         </Link>
 
         <button onClick={toggleMenu} className={styles.moblieMenuBtn}>
