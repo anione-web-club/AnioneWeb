@@ -35,20 +35,18 @@ export default function GuestBook() {
         <h1>Guest Book</h1>
         <h2>소중한 한마디 남겨주세요</h2>
       </div>
+      <form className={styles.guestoption} onSubmit={Submit}>
+        <input type="text" value={comment} onChange={setComment} className={styles.input} />
+        <button type="submit" className={styles.button}>
+          남기기!
+        </button>
+      </form>
       <div>
         {comments.map((comment, index) => (
           <div className={styles.guestchat} key={index}>
             <p>{comment.text}</p>
           </div>
         ))}
-      </div>
-      <div>
-        <form className={styles.guestoption} onSubmit={Submit}>
-          <input type="text" value={comment} onChange={setComment} />
-          <button type="submit" className={styles.button}>
-            남기기!
-          </button>
-        </form>
       </div>
     </div>
   );
