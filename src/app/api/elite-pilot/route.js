@@ -5,12 +5,7 @@ export async function POST(req) {
   const res = await req.json();
   console.log(res);
 
-  setDoc(doc(firestore, "DinoRush", Date.now().toString()), res.data);
+  setDoc(doc(firestore, "ElitePilot", Date.now().toString()), res);
 
-  return {
-    status: 200,
-    body: {
-      message: "success",
-    },
-  };
+  return Response.json({ message: "success" });
 }
