@@ -18,7 +18,17 @@ h1 {
   min-height: calc(100% - 55px);
 }
 
-* {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: white;
+}
+
+p,
+li {
   color: rgb(188, 193, 203);
 }
 
@@ -27,6 +37,7 @@ header {
   height: 75px;
   position: fixed;
   background-color: rgb(6, 6, 33);
+  z-index: 1;
 }
 
 .headerMargin {

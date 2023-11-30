@@ -1,0 +1,45 @@
+.container {
+  width: 100%;
+  max-width: 768px;
+  margin: 0 auto;
+}
+
+.container > div > img {
+  transform: scaleX(-1);
+}
+
+.container > div > video {
+  width: 100%;
+  max-height: calc(768px / 3 * 4);
+  transform: scaleX(-1);
+}
+
+.container > div > button {
+  width: 100%;
+  height: 50px;
+  display: block;
+  margin: 20px auto;
+  font-size: 2em;
+}
+
+.displayNone {
+  display: none;
+}
+
+.stickerToolbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.sticker {
+  width: 9%;
+  height: auto;
+  background-color: white;
+}
+
+.selected {
+  border: 2px solid blue;
+}
