@@ -6,10 +6,10 @@ export default function Projects() {
     { path: "/projects/speedy", name: "Speedy" },
     { path: "/projects/worrrd", name: "WORRRD!" },
     { path: "/projects/meteor-impact", name: "MeteorImpact" },
-    { path: "/projects/", name: "기숙사 102호" },
+    { path: "/projects/dormitory-room", name: "기숙사 102호" },
 
-    { path: "/projects/anione-gpt", name: "애니원GPT" },
-    { path: "/projects/camera", name: "웹생네컷" },
+    { path: "/anione-gpt", name: "애니원GPT" },
+    { path: "/camera", name: "웹생네컷" },
 
     { path: "/projects/gunchemist", name: "건케미스트" },
 
