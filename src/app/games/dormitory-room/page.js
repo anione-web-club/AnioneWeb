@@ -19,36 +19,37 @@ export default function DormitoryRoom() {
       canvas.width = (canvas.height / 5) * 3;
     }
 
-    // 이동이 가능한지 확인하는 변수
-    let leftSideBarClick = false;
-    let rightSideBarClick = false;
-    let bottomBarClick = false;
+    let allowLeftBar = false;
+    let allowRightBar = false;
+    let allowBottomBar = false;
 
     let isMove = false;
 
     const imageHeight = (canvas.width / 3) * 4;
+
+    // 가로 바 변수, 세로 바 변수 제작
+    const widthBar = canvas.width / 20;
+    const heightBar = canvas.height / 20;
 
     const background = new Image();
 
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = "#fff";
-    ctx.fillRect(0, 0, canvas.width, imageHeight);
-
+    /**
+     * 이동 바 클릭 여부를 초기화하는 함수
+     */
     function init() {
-      leftSideBarClick = false;
-      rightSideBarClick = false;
-      bottomBarClick = false;
-
-      isMove = false;
+      allowLeftBar = false;
+      allowRightBar = false;
+      allowBottomBar = false;
     }
 
     function LeftSideBar() {
-      leftSideBarClick = true;
+      allowLeftBar = true;
 
       ctx.fillStyle = "rgb(50, 50, 50)";
-      ctx.fillRect(0, 0, canvas.width / 20, imageHeight);
+      ctx.fillRect(0, 0, widthBar, imageHeight);
 
       ctx.fillStyle = "rgb(255, 255, 255)";
       ctx.beginPath();
@@ -59,10 +60,10 @@ export default function DormitoryRoom() {
     }
 
     function RightSideBar() {
-      rightSideBarClick = true;
+      allowRightBar = true;
 
       ctx.fillStyle = "rgb(50, 50, 50)";
-      ctx.fillRect(canvas.width - canvas.width / 20, 0, canvas.width / 20, imageHeight);
+      ctx.fillRect(canvas.width - widthBar, 0, widthBar, imageHeight);
 
       ctx.fillStyle = "rgb(255, 255, 255)";
       ctx.beginPath();
@@ -73,10 +74,10 @@ export default function DormitoryRoom() {
     }
 
     function BottomBar() {
-      bottomBarClick = true;
+      allowBottomBar = true;
 
       ctx.fillStyle = "rgb(50, 50, 50)";
-      ctx.fillRect(0, imageHeight - canvas.height / 20, canvas.width, canvas.height / 20);
+      ctx.fillRect(0, imageHeight - heightBar, canvas.width, heightBar);
 
       ctx.fillStyle = "rgb(255, 255, 255)";
       ctx.beginPath();
@@ -84,26 +85,6 @@ export default function DormitoryRoom() {
       ctx.lineTo(canvas.width / 2 + canvas.width / 40, imageHeight - canvas.height / 30);
       ctx.lineTo(canvas.width / 2, imageHeight - canvas.height / 80);
       ctx.fill();
-    }
-
-    /**
-     * 이벤트를 발생시키는 함수
-     * @param {function} callback 이벤트 발생 후 실행할 함수
-     * @param {object} clickBox {x: 0, y: 0, width: 0, height: 0} 형태의 객체
-     * @param {number} clickX 클릭한 x 좌표
-     * @param {number} clickY 클릭한 y 좌표
-     */
-    function TriggerEvent(callback, clickBox, clickX, clickY) {
-      const { x, y, width, height } = clickBox;
-
-      ctx.strokeStyle = "rgb(255, 0, 0)";
-      ctx.lineWidth = 5;
-      ctx.strokeRect(x, y, width, height);
-
-      // 클릭한 좌표가 박스 안에 있는지 확인
-      if (clickX > x && clickX < x + width && clickY > y && clickY < y + height) {
-        callback();
-      }
     }
 
     /**
@@ -125,8 +106,30 @@ export default function DormitoryRoom() {
       ctx.fillText(text, canvas.width / 2, imageHeight - canvas.height / 10);
     }
 
-    // 씬 구성
-    function RoomScene() {
+    function RoomFrontScene() {
+      console.log("RoomFront Scene");
+
+      const balconyClickBox = {
+        x: canvas.width / 3,
+        y: imageHeight / 3 - canvas.width / 20,
+        width: canvas.width / 3,
+        height: imageHeight / 2.5,
+      };
+
+      const tableClickBox = {
+        x: canvas.width / 20,
+        y: imageHeight / 2,
+        width: canvas.width / 5,
+        height: imageHeight / 4,
+      };
+
+      const bedClickBox = {
+        x: canvas.width - canvas.width / 3,
+        y: imageHeight / 2,
+        width: canvas.width / 3.5,
+        height: imageHeight / 3,
+      };
+
       background.src = imagePath + "정면_낮.png";
       background.onload = () => {
         init();
@@ -136,81 +139,67 @@ export default function DormitoryRoom() {
         LeftSideBar();
         RightSideBar();
 
-        console.log(leftSideBarClick, rightSideBarClick, bottomBarClick);
-      };
+        // RoomEvent 함수에 대한 참조를 유지
+        const roomFrontEventFunction = (e) => RoomFrontEvent(e);
 
-      function RoomEvent(e) {
-        console.log("Room Event");
+        // 새로운 이벤트 리스너 등록
+        canvas.addEventListener("click", roomFrontEventFunction);
 
-        const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+        function RoomFrontEvent(e) {
+          console.log("RoomFront Event");
 
-        const balconyClickBox = {
-          x: canvas.width / 3,
-          y: imageHeight / 3 - canvas.width / 20,
-          width: canvas.width / 3,
-          height: imageHeight / 2.5,
-        };
+          const rect = canvas.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
 
-        const tableClickBox = {
-          x: canvas.width / 20,
-          y: imageHeight / 2,
-          width: canvas.width / 5,
-          height: imageHeight / 4,
-        };
-
-        const bedClickBox = {
-          x: canvas.width - canvas.width / 3,
-          y: imageHeight / 2,
-          width: canvas.width / 3.5,
-          height: imageHeight / 3,
-        };
-
-        if (x < canvas.width / 20 && leftSideBarClick) {
-          isMove = true;
-          ToiletScene();
-        }
-        if (x > canvas.width - canvas.width / 20 && rightSideBarClick) {
-          isMove = true;
-          BathroomScene();
-        }
-
-        TriggerEvent(
-          () => {
+          if (x < widthBar && allowLeftBar) {
+            // 새로운 씬으로 전환하기 전에 이전 이벤트 리스너 삭제
+            canvas.removeEventListener("click", roomFrontEventFunction);
+            ToiletScene();
+          }
+          if (x > canvas.width - widthBar && allowRightBar) {
+            // 새로운 씬으로 전환하기 전에 이전 이벤트 리스너 삭제
+            canvas.removeEventListener("click", roomFrontEventFunction);
+            BathroomScene();
+          }
+          // 베란다 클릭
+          if (
+            balconyClickBox.x < x &&
+            x < balconyClickBox.x + balconyClickBox.width &&
+            balconyClickBox.y < y &&
+            y < balconyClickBox.y + balconyClickBox.height
+          ) {
             printText("아직 낮이다.");
-          },
-          balconyClickBox,
-          x,
-          y
-        );
-
-        TriggerEvent(
-          () => {
+          }
+          // 책상 클릭
+          if (
+            tableClickBox.x < x &&
+            x < tableClickBox.x + tableClickBox.width &&
+            tableClickBox.y < y &&
+            y < tableClickBox.y + tableClickBox.height
+          ) {
+            // 새로운 씬으로 전환하기 전에 이전 이벤트 리스너 삭제
+            canvas.removeEventListener("click", roomFrontEventFunction);
             TableScene();
-          },
-          tableClickBox,
-          x,
-          y
-        );
-
-        TriggerEvent(
-          () => {
+          }
+          // 침대 클릭
+          if (
+            bedClickBox.x < x &&
+            x < bedClickBox.x + bedClickBox.width &&
+            bedClickBox.y < y &&
+            y < bedClickBox.y + bedClickBox.height
+          ) {
+            // 새로운 씬으로 전환하기 전에 이전 이벤트 리스너 삭제
+            canvas.removeEventListener("click", roomFrontEventFunction);
             BedScene();
-          },
-          bedClickBox,
-          x,
-          y
-        );
-
-        if (isMove) canvas.removeEventListener("click", RoomEvent);
-      }
-
-      canvas.removeEventListener("click", RoomEvent);
-      canvas.addEventListener("click", RoomEvent);
+          }
+        }
+      };
     }
 
     function ToiletScene() {
+      console.log("Toilet Scene");
+
       background.src = imagePath + "화장실_낮.png";
       background.onload = () => {
         init();
@@ -218,20 +207,62 @@ export default function DormitoryRoom() {
         ctx.drawImage(background, 0, 0, canvas.width, imageHeight);
 
         BottomBar();
+
+        // ToiletEvent 함수에 대한 참조를 유지
+        const toiletEventFunction = (e) => ToiletEvent(e);
+
+        // 새로운 이벤트 리스너 등록
+        canvas.addEventListener("click", toiletEventFunction);
+
+        function ToiletEvent(e) {
+          console.log("Toilet Event");
+
+          const rect = canvas.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          if (y > imageHeight - heightBar && allowBottomBar) {
+            // 새로운 씬으로 전환하기 전에 이전 이벤트 리스너 삭제
+            canvas.removeEventListener("click", toiletEventFunction);
+            RoomFrontScene();
+          }
+        }
       };
-
-      function ToiletEvent(e) {
-        const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-
-        if (y > imageHeight - canvas.height / 20 && bottomBarClick) RoomScene();
-      }
-
-      canvas.addEventListener("click", ToiletEvent);
     }
 
     function BathroomScene() {
+      console.log("Bathroom Scene");
+
+      const sinkClickBox = {
+        x: 0,
+        y: imageHeight / 2,
+        width: canvas.width / 2,
+        height: imageHeight / 3,
+      };
+
+      const soapClickBox = {
+        x: canvas.width / 2.25,
+        y: imageHeight / 1.75,
+        width: canvas.width / 15,
+        height: imageHeight / 30,
+      };
+
+      // 거울 클릭 히트박스
+      const mirrorClickBox = {
+        x: canvas.width / 7,
+        y: imageHeight / 5,
+        width: canvas.width - canvas.width / 7,
+        height: imageHeight / 4,
+      };
+
+      // 샤워기 클릭 히트박스
+      const showerClickBox = {
+        x: canvas.width / 1.3,
+        y: imageHeight / 2.2,
+        width: canvas.width / 5,
+        height: imageHeight / 10,
+      };
+
       background.src = imagePath + "욕실_낮.png";
       background.onload = () => {
         init();
@@ -239,20 +270,104 @@ export default function DormitoryRoom() {
         ctx.drawImage(background, 0, 0, canvas.width, imageHeight);
 
         BottomBar();
+
+        // BathroomEvent 함수에 대한 참조를 유지
+        const bathroomEventFunction = (e) => BathroomEvent(e);
+
+        // 새로운 이벤트 리스너 등록
+        canvas.addEventListener("click", bathroomEventFunction);
+
+        function BathroomEvent(e) {
+          console.log("Bathroom Event");
+
+          const rect = canvas.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          if (y > imageHeight - heightBar && allowBottomBar) {
+            // 새로운 씬으로 전환하기 전에 이전 이벤트 리스너 삭제
+            canvas.removeEventListener("click", bathroomEventFunction);
+            RoomFrontScene();
+          }
+          if (
+            soapClickBox.x < x &&
+            x < soapClickBox.x + soapClickBox.width &&
+            soapClickBox.y < y &&
+            y < soapClickBox.y + soapClickBox.height
+          ) {
+            printText("비누다.");
+          }
+          // 세면대 클릭
+          else if (
+            sinkClickBox.x < x &&
+            x < sinkClickBox.x + sinkClickBox.width &&
+            sinkClickBox.y < y &&
+            y < sinkClickBox.y + sinkClickBox.height
+          ) {
+            // 새로운 씬으로 전환하기 전에 이전 이벤트 리스너 삭제
+            canvas.removeEventListener("click", bathroomEventFunction);
+            // 세면대 씬으로 전환
+            SinkScene();
+          }
+
+          // 거울 클릭
+          else if (
+            mirrorClickBox.x < x &&
+            x < mirrorClickBox.x + mirrorClickBox.width &&
+            mirrorClickBox.y < y &&
+            y < mirrorClickBox.y + mirrorClickBox.height
+          ) {
+            printText("보고 싶지 않다.");
+          }
+          // 샤워기 클릭
+          if (
+            showerClickBox.x < x &&
+            x < showerClickBox.x + showerClickBox.width &&
+            showerClickBox.y < y &&
+            y < showerClickBox.y + showerClickBox.height
+          ) {
+            printText("굳이 건드릴 필요는 없다.");
+          }
+        }
       };
+    }
 
-      function BathroomEvent(e) {
-        const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+    function SinkScene() {
+      console.log("Sink Scene");
 
-        if (y > imageHeight - canvas.height / 20 && bottomBarClick) RoomScene();
-      }
+      background.src = imagePath + "세면대_낮.png";
+      background.onload = () => {
+        init();
 
-      canvas.addEventListener("click", BathroomEvent);
+        ctx.drawImage(background, 0, 0, canvas.width, imageHeight);
+
+        BottomBar();
+
+        // SinkEvent 함수에 대한 참조를 유지
+        const sinkEventFunction = (e) => SinkEvent(e);
+
+        // 새로운 이벤트 리스너 등록
+        canvas.addEventListener("click", sinkEventFunction);
+
+        function SinkEvent(e) {
+          console.log("Sink Event");
+
+          const rect = canvas.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          if (y > imageHeight - heightBar && allowBottomBar) {
+            // 새로운 씬으로 전환하기 전에 이전 이벤트 리스너 삭제
+            canvas.removeEventListener("click", sinkEventFunction);
+            BathroomScene();
+          }
+        }
+      };
     }
 
     function TableScene() {
+      console.log("Table Scene");
+
       background.src = imagePath + "책상_낮_필통미개봉.png";
       background.onload = () => {
         init();
@@ -261,44 +376,58 @@ export default function DormitoryRoom() {
 
         LeftSideBar();
         RightSideBar();
+
+        // TableEvent 함수에 대한 참조를 유지
+        const tableEventFunction = (e) => TableEvent(e);
+
+        // 새로운 이벤트 리스너 등록
+        canvas.addEventListener("click", tableEventFunction);
+
+        function TableEvent(e) {
+          console.log("Table Event");
+
+          const rect = canvas.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          if (x < widthBar && allowLeftBar) {
+            // 새로운 씬으로 전환하기 전에 이전 이벤트 리스너 삭제
+            canvas.removeEventListener("click", tableEventFunction);
+            RoomBackScene();
+          }
+          if (x > canvas.width - widthBar && allowRightBar) {
+            // 새로운 씬으로 전환하기 전에 이전 이벤트 리스너 삭제
+            canvas.removeEventListener("click", tableEventFunction);
+            RoomFrontScene();
+          }
+        }
       };
-
-      function TableEvent(e) {
-        const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-
-        if (x < canvas.width / 20 && leftSideBarClick) BackRoomScene();
-        if (x > canvas.width - canvas.width / 20 && rightSideBarClick) RoomScene();
-      }
-
-      canvas.addEventListener("click", TableEvent);
-    }
-
-    function BackRoomScene() {
-      background.src = imagePath + "후면_낮.png";
-      background.onload = () => {
-        init();
-
-        ctx.drawImage(background, 0, 0, canvas.width, imageHeight);
-
-        LeftSideBar();
-        RightSideBar();
-      };
-
-      function BackRoomEvent(e) {
-        const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-
-        if (x < canvas.width / 20 && leftSideBarClick) TableScene();
-        if (x > canvas.width - canvas.width / 20 && rightSideBarClick) BedScene();
-      }
-
-      canvas.addEventListener("click", BackRoomEvent);
     }
 
     function BedScene() {
+      console.log("Bed Scene");
+
+      const fanClickBox = {
+        x: widthBar,
+        y: imageHeight / 2,
+        width: canvas.width / 5,
+        height: imageHeight / 2,
+      };
+
+      const bedClickBox = {
+        x: widthBar + canvas.width / 5,
+        y: imageHeight / 1.5,
+        width: canvas.width - (widthBar * 2 + canvas.width / 5),
+        height: imageHeight / 5,
+      };
+
+      const drawerClickBox = {
+        x: widthBar + canvas.width / 5,
+        y: imageHeight / 1.5 + imageHeight / 5,
+        width: canvas.width - (widthBar * 2 + canvas.width / 5),
+        height: imageHeight / 7.5,
+      };
+
       background.src = imagePath + "침대_낮.png";
       background.onload = () => {
         init();
@@ -307,30 +436,102 @@ export default function DormitoryRoom() {
 
         LeftSideBar();
         RightSideBar();
+
+        // BedEvent 함수에 대한 참조를 유지
+        const bedEventFunction = (e) => BedEvent(e);
+
+        // 새로운 이벤트 리스너 등록
+        canvas.addEventListener("click", bedEventFunction);
+
+        function BedEvent(e) {
+          console.log("Bed Event");
+
+          const rect = canvas.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          if (x < widthBar && allowLeftBar) {
+            // 새로운 씬으로 전환하기 전에 이전 이벤트 리스너 삭제
+            canvas.removeEventListener("click", bedEventFunction);
+            RoomBackScene();
+          }
+          if (x > canvas.width - widthBar && allowRightBar) {
+            // 새로운 씬으로 전환하기 전에 이전 이벤트 리스너 삭제
+            canvas.removeEventListener("click", bedEventFunction);
+            RoomFrontScene();
+          }
+          // 선풍기 클릭
+          if (
+            fanClickBox.x < x &&
+            x < fanClickBox.x + fanClickBox.width &&
+            fanClickBox.y < y &&
+            y < fanClickBox.y + fanClickBox.height
+          ) {
+            printText("선풍기가 간간히 돌아간다.");
+          }
+          // 침대 클릭
+          if (
+            bedClickBox.x < x &&
+            x < bedClickBox.x + bedClickBox.width &&
+            bedClickBox.y < y &&
+            y < bedClickBox.y + bedClickBox.height
+          ) {
+            // 새로운 씬으로 전환하기 전에 이전 이벤트 리스너 삭제
+            printText("침대다.");
+          }
+          // 서랍장 클릭
+          if (
+            drawerClickBox.x < x &&
+            x < drawerClickBox.x + drawerClickBox.width &&
+            drawerClickBox.y < y &&
+            y < drawerClickBox.y + drawerClickBox.height
+          ) {
+            printText("열리지 않는다.");
+          }
+        }
       };
-
-      function BedEvent(e) {
-        const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-
-        if (x < canvas.width / 20 && leftSideBarClick) BackRoomScene();
-        if (x > canvas.width - canvas.width / 20 && rightSideBarClick) RoomScene();
-      }
-
-      canvas.addEventListener("click", BedEvent);
     }
 
-    document.addEventListener("click", (e) => {
-      // 캔버스에서 포커스의 위치를 확인
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+    function RoomBackScene() {
+      console.log("RoomBack Scene");
 
-      console.log(x, y);
-    });
+      background.src = imagePath + "후면_낮.png";
+      background.onload = () => {
+        init();
 
-    RoomScene();
+        ctx.drawImage(background, 0, 0, canvas.width, imageHeight);
+
+        LeftSideBar();
+        RightSideBar();
+
+        // RoomBackEvent 함수에 대한 참조를 유지
+        const roomBackEventFunction = (e) => RoomBackEvent(e);
+
+        // 새로운 이벤트 리스너 등록
+        canvas.addEventListener("click", roomBackEventFunction);
+
+        function RoomBackEvent(e) {
+          console.log("RoomBack Event");
+
+          const rect = canvas.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          if (x < widthBar && allowLeftBar) {
+            // 새로운 씬으로 전환하기 전에 이전 이벤트 리스너 삭제
+            canvas.removeEventListener("click", roomBackEventFunction);
+            BedScene();
+          }
+          if (x > canvas.width - widthBar && allowRightBar) {
+            // 새로운 씬으로 전환하기 전에 이전 이벤트 리스너 삭제
+            canvas.removeEventListener("click", roomBackEventFunction);
+            TableScene();
+          }
+        }
+      };
+    }
+
+    RoomFrontScene();
   }, []);
 
   return (
