@@ -23,8 +23,6 @@ export default function DormitoryRoom() {
     let allowRightBar = false;
     let allowBottomBar = false;
 
-    let isMove = false;
-
     const imageHeight = (canvas.width / 3) * 4;
 
     // 가로 바 변수, 세로 바 변수 제작
@@ -32,6 +30,8 @@ export default function DormitoryRoom() {
     const heightBar = canvas.height / 20;
 
     const background = new Image();
+
+    let inventory = [];
 
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -593,7 +593,7 @@ export default function DormitoryRoom() {
             y < roomFrontClickBox.y + roomFrontClickBox.height
           ) {
             canvas.removeEventListener("click", roomBackEventFunction);
-            RoomFrontScene();
+            InDoorScene();
           }
           // 서랍장 클릭
           if (
@@ -613,8 +613,8 @@ export default function DormitoryRoom() {
       console.log("Closet Scene");
 
       const closetClickBox = {
-        x: widthBar,
-        y: imageHeight / 2,
+        x: canvas.width / 4,
+        y: imageHeight / 10,
         width: canvas.width / 5,
         height: imageHeight / 2,
       };
@@ -700,6 +700,13 @@ export default function DormitoryRoom() {
     function BearScene() {
       console.log("Bear Scene");
 
+      const bearClickBox = {
+        x: canvas.width / 4,
+        y: imageHeight / 2,
+        width: canvas.width / 5,
+        height: imageHeight / 10,
+      };
+
       background.src = imagePath + "곰돌이.png";
       background.onload = () => {
         init();
@@ -725,11 +732,151 @@ export default function DormitoryRoom() {
             canvas.removeEventListener("click", bearEventFunction);
             DrawerScene();
           }
+          if (
+            bearClickBox.x < x &&
+            x < bearClickBox.x + bearClickBox.width &&
+            bearClickBox.y < y &&
+            y < bearClickBox.y + bearClickBox.height
+          ) {
+            printText("귀여운 곰돌이다.");
+          }
         }
       };
     }
 
-    RoomFrontScene();
+    function InDoorScene() {
+      console.log("InDoor Scene");
+
+      const doorClickBox = {
+        x: 0,
+        y: 0,
+        width: canvas.width,
+        height: imageHeight - heightBar,
+      };
+
+      background.src = imagePath + "문_낮.png";
+      background.onload = () => {
+        init();
+
+        ctx.drawImage(background, 0, 0, canvas.width, imageHeight);
+
+        BottomBar();
+
+        // InDoorEvent 함수에 대한 참조를 유지
+        const inDoorEventFunction = (e) => InDoorEvent(e);
+
+        // 새로운 이벤트 리스너 등록
+        canvas.addEventListener("click", inDoorEventFunction);
+
+        function InDoorEvent(e) {
+          console.log("InDoor Event");
+
+          const rect = canvas.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          if (y > imageHeight - heightBar && allowBottomBar) {
+            canvas.removeEventListener("click", inDoorEventFunction);
+            RoomBackScene();
+          }
+          if (
+            doorClickBox.x < x &&
+            x < doorClickBox.x + doorClickBox.width &&
+            doorClickBox.y < y &&
+            y < doorClickBox.y + doorClickBox.height
+          ) {
+            canvas.removeEventListener("click", inDoorEventFunction);
+            OutDoorScene();
+          }
+        }
+      };
+    }
+
+    function OutDoorScene() {
+      console.log("OutDoor Scene");
+
+      const doorClickBox = {
+        x: 0,
+        y: 0,
+        width: canvas.width,
+        height: imageHeight,
+      };
+
+      background.src = imagePath + "102호.png";
+      background.onload = () => {
+        init();
+
+        ctx.drawImage(background, 0, 0, canvas.width, imageHeight);
+
+        // OutDoorEvent 함수에 대한 참조를 유지
+        const outDoorEventFunction = (e) => OutDoorEvent(e);
+
+        // 새로운 이벤트 리스너 등록
+        canvas.addEventListener("click", outDoorEventFunction);
+
+        function OutDoorEvent(e) {
+          console.log("OutDoor Event");
+
+          const rect = canvas.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          if (
+            doorClickBox.x < x &&
+            x < doorClickBox.x + doorClickBox.width &&
+            doorClickBox.y < y &&
+            y < doorClickBox.y + doorClickBox.height
+          ) {
+            canvas.removeEventListener("click", outDoorEventFunction);
+            RoomFrontScene();
+          }
+        }
+      };
+    }
+
+    function AlertScene() {
+      console.log("Aler Scene");
+
+      const alertClickBox = {
+        x: 0,
+        y: 0,
+        width: canvas.width,
+        height: imageHeight,
+      };
+
+      background.src = imagePath + "알림.png";
+      background.onload = () => {
+        init();
+
+        ctx.drawImage(background, 0, 0, canvas.width, imageHeight);
+
+        // AlerEvent 함수에 대한 참조를 유지
+        const alerEventFunction = (e) => AlerEvent(e);
+
+        // 새로운 이벤트 리스너 등록
+        canvas.addEventListener("click", alerEventFunction);
+
+        function AlerEvent(e) {
+          console.log("Aler Event");
+
+          const rect = canvas.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          if (
+            alertClickBox.x < x &&
+            x < alertClickBox.x + alertClickBox.width &&
+            alertClickBox.y < y &&
+            y < alertClickBox.y + alertClickBox.height
+          ) {
+            canvas.removeEventListener("click", alerEventFunction);
+            OutDoorScene();
+          }
+        }
+      };
+    }
+
+    OutDoorScene();
   }, []);
 
   return (
