@@ -368,6 +368,20 @@ export default function DormitoryRoom() {
     function TableScene() {
       console.log("Table Scene");
 
+      const chairClickBox = {
+        x: canvas.width / 5,
+        y: imageHeight / 1.3,
+        width: canvas.width / 3,
+        height: imageHeight / 5,
+      };
+
+      const paperClickBox = {
+        x: canvas.width / 2,
+        y: imageHeight / 2.25,
+        width: canvas.width / 5,
+        height: imageHeight / 8,
+      };
+
       background.src = imagePath + "책상_낮_필통미개봉.png";
       background.onload = () => {
         init();
@@ -399,6 +413,22 @@ export default function DormitoryRoom() {
             // 새로운 씬으로 전환하기 전에 이전 이벤트 리스너 삭제
             canvas.removeEventListener("click", tableEventFunction);
             RoomFrontScene();
+          }
+          if (
+            chairClickBox.x < x &&
+            x < chairClickBox.x + chairClickBox.width &&
+            chairClickBox.y < y &&
+            y < chairClickBox.y + chairClickBox.height
+          ) {
+            printText("평범한 의자");
+          }
+          if (
+            paperClickBox.x < x &&
+            x < paperClickBox.x + paperClickBox.width &&
+            paperClickBox.y < y &&
+            y < paperClickBox.y + paperClickBox.height
+          ) {
+            printText("무언가 적혀있다.");
           }
         }
       };
@@ -495,6 +525,25 @@ export default function DormitoryRoom() {
     function RoomBackScene() {
       console.log("RoomBack Scene");
 
+      const closetClickBox = {
+        x: canvas.width / 4,
+        y: imageHeight / 3,
+        width: canvas.width / 8,
+        height: imageHeight / 3,
+      };
+      const roomFrontClickBox = {
+        x: canvas.width / 2,
+        y: imageHeight / 3,
+        width: canvas.width / 8,
+        height: imageHeight / 3,
+      };
+      const drawerClickBox = {
+        x: canvas.width / 1.5,
+        y: imageHeight / 2,
+        width: canvas.width / 4,
+        height: imageHeight / 6,
+      };
+
       background.src = imagePath + "후면_낮.png";
       background.onload = () => {
         init();
@@ -526,6 +575,155 @@ export default function DormitoryRoom() {
             // 새로운 씬으로 전환하기 전에 이전 이벤트 리스너 삭제
             canvas.removeEventListener("click", roomBackEventFunction);
             TableScene();
+          }
+          // 옷장 클릭
+          if (
+            closetClickBox.x < x &&
+            x < closetClickBox.x + closetClickBox.width &&
+            closetClickBox.y < y &&
+            y < closetClickBox.y + closetClickBox.height
+          ) {
+            canvas.removeEventListener("click", roomBackEventFunction);
+            ClosetScene();
+          }
+          if (
+            roomFrontClickBox.x < x &&
+            x < roomFrontClickBox.x + roomFrontClickBox.width &&
+            roomFrontClickBox.y < y &&
+            y < roomFrontClickBox.y + roomFrontClickBox.height
+          ) {
+            canvas.removeEventListener("click", roomBackEventFunction);
+            RoomFrontScene();
+          }
+          // 서랍장 클릭
+          if (
+            drawerClickBox.x < x &&
+            x < drawerClickBox.x + drawerClickBox.width &&
+            drawerClickBox.y < y &&
+            y < drawerClickBox.y + drawerClickBox.height
+          ) {
+            canvas.removeEventListener("click", roomBackEventFunction);
+            DrawerScene();
+          }
+        }
+      };
+    }
+
+    function ClosetScene() {
+      console.log("Closet Scene");
+
+      const closetClickBox = {
+        x: widthBar,
+        y: imageHeight / 2,
+        width: canvas.width / 5,
+        height: imageHeight / 2,
+      };
+
+      background.src = imagePath + "옷장_낮.png";
+      background.onload = () => {
+        init();
+
+        ctx.drawImage(background, 0, 0, canvas.width, imageHeight);
+
+        LeftSideBar();
+
+        // ClosetEvent 함수에 대한 참조를 유지
+        const closetEventFunction = (e) => ClosetEvent(e);
+
+        // 새로운 이벤트 리스너 등록
+        canvas.addEventListener("click", closetEventFunction);
+
+        function ClosetEvent(e) {
+          console.log("Closet Event");
+
+          const rect = canvas.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          if (x < widthBar && allowLeftBar) {
+            canvas.removeEventListener("click", closetEventFunction);
+            RoomBackScene();
+          }
+        }
+      };
+    }
+
+    function DrawerScene() {
+      console.log("Drawer Scene");
+
+      const drawerClickBox = {
+        x: canvas.width / 4,
+        y: imageHeight / 2,
+        width: canvas.width / 5,
+        height: imageHeight / 10,
+      };
+
+      background.src = imagePath + "서랍_낮_곰돌이있음.png";
+      background.onload = () => {
+        init();
+
+        ctx.drawImage(background, 0, 0, canvas.width, imageHeight);
+
+        RightSideBar();
+
+        // DrawerEvent 함수에 대한 참조를 유지
+        const drawerEventFunction = (e) => DrawerEvent(e);
+
+        // 새로운 이벤트 리스너 등록
+        canvas.addEventListener("click", drawerEventFunction);
+
+        function DrawerEvent(e) {
+          console.log("Drawer Event");
+
+          const rect = canvas.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          if (x > canvas.width - widthBar && allowRightBar) {
+            canvas.removeEventListener("click", drawerEventFunction);
+            RoomBackScene();
+          }
+          // 서랍장 클릭
+          if (
+            drawerClickBox.x < x &&
+            x < drawerClickBox.x + drawerClickBox.width &&
+            drawerClickBox.y < y &&
+            y < drawerClickBox.y + drawerClickBox.height
+          ) {
+            canvas.removeEventListener("click", drawerEventFunction);
+            BearScene();
+          }
+        }
+      };
+    }
+
+    function BearScene() {
+      console.log("Bear Scene");
+
+      background.src = imagePath + "곰돌이.png";
+      background.onload = () => {
+        init();
+
+        ctx.drawImage(background, 0, 0, canvas.width, imageHeight);
+
+        RightSideBar();
+
+        // BearEvent 함수에 대한 참조를 유지
+        const bearEventFunction = (e) => BearEvent(e);
+
+        // 새로운 이벤트 리스너 등록
+        canvas.addEventListener("click", bearEventFunction);
+
+        function BearEvent(e) {
+          console.log("Bear Event");
+
+          const rect = canvas.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          if (x > canvas.width - widthBar && allowRightBar) {
+            canvas.removeEventListener("click", bearEventFunction);
+            DrawerScene();
           }
         }
       };
