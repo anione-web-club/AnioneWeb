@@ -24,6 +24,8 @@ export default function DormitoryRoom() {
     let rightSideBarClick = false;
     let bottomBarClick = false;
 
+    let isMove = false;
+
     const imageHeight = (canvas.width / 3) * 4;
 
     const background = new Image();
@@ -38,6 +40,8 @@ export default function DormitoryRoom() {
       leftSideBarClick = false;
       rightSideBarClick = false;
       bottomBarClick = false;
+
+      isMove = false;
     }
 
     function LeftSideBar() {
@@ -86,20 +90,39 @@ export default function DormitoryRoom() {
      * 이벤트를 발생시키는 함수
      * @param {function} callback 이벤트 발생 후 실행할 함수
      * @param {object} clickBox {x: 0, y: 0, width: 0, height: 0} 형태의 객체
-     * @param {object} clickPoint {x: 0, y: 0} 형태의 객체
+     * @param {number} clickX 클릭한 x 좌표
+     * @param {number} clickY 클릭한 y 좌표
      */
-    function triggerEvent(callback, clickBox, clickPoint) {
+    function TriggerEvent(callback, clickBox, clickX, clickY) {
       const { x, y, width, height } = clickBox;
-      const { x: clickX, y: clickY } = clickPoint;
 
-      // 클릭 박스 윤곽선 그리기
-      // ctx.strokeStyle = "#f00";
-      // ctx.strokeRect(x, y, width, height);
+      ctx.strokeStyle = "rgb(255, 0, 0)";
+      ctx.lineWidth = 5;
+      ctx.strokeRect(x, y, width, height);
 
       // 클릭한 좌표가 박스 안에 있는지 확인
       if (clickX > x && clickX < x + width && clickY > y && clickY < y + height) {
         callback();
       }
+    }
+
+    /**
+     * 정보 텍스트를 출력하는 함수
+     * @param {string} text 출력할 텍스트
+     */
+    function printText(text) {
+      ctx.fillStyle = "#222";
+      ctx.fillRect(
+        canvas.width / 10,
+        imageHeight - canvas.height / 7.5,
+        canvas.width - canvas.width / 5,
+        canvas.height / 20
+      );
+
+      ctx.fillStyle = "#fff";
+      ctx.font = "30px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText(text, canvas.width / 2, imageHeight - canvas.height / 10);
     }
 
     // 씬 구성
@@ -117,27 +140,73 @@ export default function DormitoryRoom() {
       };
 
       function RoomEvent(e) {
+        console.log("Room Event");
+
         const rect = canvas.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
 
-        if (x < canvas.width / 20 && leftSideBarClick) ToiletScene();
-        if (x > canvas.width - canvas.width / 20 && rightSideBarClick) BathroomScene();
+        const balconyClickBox = {
+          x: canvas.width / 3,
+          y: imageHeight / 3 - canvas.width / 20,
+          width: canvas.width / 3,
+          height: imageHeight / 2.5,
+        };
 
-        triggerEvent(
+        const tableClickBox = {
+          x: canvas.width / 20,
+          y: imageHeight / 2,
+          width: canvas.width / 5,
+          height: imageHeight / 4,
+        };
+
+        const bedClickBox = {
+          x: canvas.width - canvas.width / 3,
+          y: imageHeight / 2,
+          width: canvas.width / 3.5,
+          height: imageHeight / 3,
+        };
+
+        if (x < canvas.width / 20 && leftSideBarClick) {
+          isMove = true;
+          ToiletScene();
+        }
+        if (x > canvas.width - canvas.width / 20 && rightSideBarClick) {
+          isMove = true;
+          BathroomScene();
+        }
+
+        TriggerEvent(
           () => {
-            console.log("책상 클릭");
+            printText("아직 낮이다.");
           },
-          {
-            x: canvas.width / 2 - canvas.width / 10,
-            y: imageHeight / 2 - canvas.width / 10,
-            width: canvas.width / 5,
-            height: canvas.width / 5,
-          },
-          { x, y }
+          balconyClickBox,
+          x,
+          y
         );
+
+        TriggerEvent(
+          () => {
+            TableScene();
+          },
+          tableClickBox,
+          x,
+          y
+        );
+
+        TriggerEvent(
+          () => {
+            BedScene();
+          },
+          bedClickBox,
+          x,
+          y
+        );
+
+        if (isMove) canvas.removeEventListener("click", RoomEvent);
       }
 
+      canvas.removeEventListener("click", RoomEvent);
       canvas.addEventListener("click", RoomEvent);
     }
 
@@ -182,6 +251,84 @@ export default function DormitoryRoom() {
 
       canvas.addEventListener("click", BathroomEvent);
     }
+
+    function TableScene() {
+      background.src = imagePath + "책상_낮_필통미개봉.png";
+      background.onload = () => {
+        init();
+
+        ctx.drawImage(background, 0, 0, canvas.width, imageHeight);
+
+        LeftSideBar();
+        RightSideBar();
+      };
+
+      function TableEvent(e) {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        if (x < canvas.width / 20 && leftSideBarClick) BackRoomScene();
+        if (x > canvas.width - canvas.width / 20 && rightSideBarClick) RoomScene();
+      }
+
+      canvas.addEventListener("click", TableEvent);
+    }
+
+    function BackRoomScene() {
+      background.src = imagePath + "후면_낮.png";
+      background.onload = () => {
+        init();
+
+        ctx.drawImage(background, 0, 0, canvas.width, imageHeight);
+
+        LeftSideBar();
+        RightSideBar();
+      };
+
+      function BackRoomEvent(e) {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        if (x < canvas.width / 20 && leftSideBarClick) TableScene();
+        if (x > canvas.width - canvas.width / 20 && rightSideBarClick) BedScene();
+      }
+
+      canvas.addEventListener("click", BackRoomEvent);
+    }
+
+    function BedScene() {
+      background.src = imagePath + "침대_낮.png";
+      background.onload = () => {
+        init();
+
+        ctx.drawImage(background, 0, 0, canvas.width, imageHeight);
+
+        LeftSideBar();
+        RightSideBar();
+      };
+
+      function BedEvent(e) {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        if (x < canvas.width / 20 && leftSideBarClick) BackRoomScene();
+        if (x > canvas.width - canvas.width / 20 && rightSideBarClick) RoomScene();
+      }
+
+      canvas.addEventListener("click", BedEvent);
+    }
+
+    document.addEventListener("click", (e) => {
+      // 캔버스에서 포커스의 위치를 확인
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      console.log(x, y);
+    });
 
     RoomScene();
   }, []);
