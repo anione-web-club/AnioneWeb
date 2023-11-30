@@ -40,16 +40,16 @@ const CanvasComponent = () => {
 
     function GameTime() {
       if (start) {
-        if (wordCnt === 60) {
+        if (wordCnt === 0) {
           console.log("win");
           setGameWin(true);
           setStart(false);
           GameEnd();
-        } else if (sec < 60) {
+        } else if (sec < 300) {
           sec += 1;
           console.log(sec);
           gametimeout = setTimeout(GameTime, 1000);
-        } else if (sec === 10) {
+        } else if (sec === 300) {
           console.log("end");
           setGameOver(true);
           setStart(false);
@@ -68,7 +68,7 @@ const CanvasComponent = () => {
         ctx.textAlign = "center";
         ctx.font = "70px Arial";
         ctx.fillStyle = "#000000";
-        ctx.fillText(60, canvas.width / 2, 100);
+        ctx.fillText(300, canvas.width / 2, 100);
         GameEnd();
       } else if (gameWin) {
         ClearCanvas();
@@ -99,12 +99,13 @@ const CanvasComponent = () => {
         ctx.fillStyle = "#D1180B";
         ctx.fillText("GAME OVER", canvas.width / 2, 200);
       }
+
       if (gameWin) {
         ctx.textAlign = "center";
-        ctx.font = "57px Arial";
+        ctx.font = "42px Arial";
         ctx.fillStyle = "#FCFAAC";
-        ctx.fillText("Clear Time : ", canvas.width / 2, 200);
-        ctx.fillText(sec, canvas.width / 3, 200);
+        ctx.fillText("Clear Time : ", canvas.width / 2.7, 200);
+        ctx.fillText(sec, canvas.width / 1.3, 200);
       }
     }
 
