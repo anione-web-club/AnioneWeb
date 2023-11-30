@@ -25,10 +25,12 @@ export default function Ranking() {
     <div className={styles.container}>
       <h1>{selectedGame} 랭킹 보드</h1>
       <select onChange={setSelectedGame} className={styles.selectGame}>
-        <option value="DinoRush">DinoRush</option>
         <option value="Speedy">Speedy</option>
         <option value="WORRRD">WORRRD</option>
         <option value="MeteorImpact">MeteorImpact</option>
+        <option value="DinoRush">DinoRush</option>
+        <option value="OrdinaryRhythm">OrdinaryRhythm</option>
+        <option value="SpikeRush">SpikeRush</option>
       </select>
       <table className={styles.table}>
         <thead>
