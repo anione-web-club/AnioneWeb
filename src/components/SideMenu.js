@@ -23,10 +23,6 @@ const SideMenuList = [
     name: "Leaflet",
     path: "/leaflet",
   },
-  {
-    name: "Camera",
-    path: "/camera",
-  },
 ];
 
 export default function SideMenu({ isOpen }) {
