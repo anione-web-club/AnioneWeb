@@ -21,6 +21,15 @@ export default function Ranking() {
     getRankings();
   }, [selectedGame]);
 
+  useEffect(() => {
+    const min = 1000 * 60;
+
+    const interval = setInterval(() => {
+      getRankings();
+    }, min);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className={styles.container}>
       <h1>{selectedGame} 랭킹 보드</h1>
@@ -32,6 +41,7 @@ export default function Ranking() {
         <option value="OrdinaryRhythm">OrdinaryRhythm</option>
         <option value="SpikeRush">SpikeRush</option>
       </select>
+      <p>랭킹 반영은 최대 1분이 소요될 수 있습니다.</p>
       <table className={styles.table}>
         <thead>
           <tr>
