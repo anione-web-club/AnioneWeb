@@ -1,0 +1,48 @@
+.form {
+  display: flex;
+  width: 97.5%;
+  height: 100%;
+  margin: 0 auto;
+}
+
+.form input {
+  width: 88%;
+  height: 100%;
+  margin: 0 1%;
+  border: none;
+  outline: none;
+  padding: 20px 0;
+  font-size: 80%;
+  font-weight: 500;
+  background-color: #333;
+  color: #fff;
+}
+
+.form button {
+  width: 10%;
+  height: 100%;
+  padding: 20px 0;
+  border: 0;
+  outline: none;
+  background-color: #333;
+  color: #fff;
+  font-size: 80%;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.messages {
+  height: 80vh;
+  overflow-y: scroll;
+  padding: 0 20px;
+}
+
+.messages li {
+  list-style: none;
+  margin-bottom: 20px;
+  padding: 15px;
+  border-bottom: 1px solid #333;
+  border-radius: 10px;
+  background-color: white;
+  color: black;
+}
