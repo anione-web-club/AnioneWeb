@@ -14,7 +14,7 @@ export default function GuestBook() {
   }, []);
 
   function getComments() {
-    getDocs(collection(firestore, "community")).then((snapshot) => {
+    getDocs(collection(firestore, "Community")).then((snapshot) => {
       setComments(snapshot.docs.map((doc) => doc.data()).reverse());
     });
   }
@@ -22,7 +22,7 @@ export default function GuestBook() {
   async function Submit(e) {
     e.preventDefault();
     const time = new Date().toLocaleString("ko-KR");
-    await setDoc(doc(firestore, "community", time), {
+    await setDoc(doc(firestore, "Community", time), {
       text: comment,
     });
     setComment({ target: { value: "" } });
