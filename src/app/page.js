@@ -1,6 +1,16 @@
 import textStyle from "@/styles/text.module.css";
+import Link from 'next/link';
 
 export default function Home() {
+  const projectList = [
+    { name: 'Speedy', path: '/projects/speedy' },
+    { name: 'WORRRD', path: '/projects/worrrd' },
+    { name: 'MeteorImpact', path: '/projects/meteor-impact' },
+    { name: 'DormitoryRoom', path: '/projects/dormitory-room' },
+    { name: 'AnioneGPT', path: '/anione-gpt' },
+    { name: 'WebCam', path: '/camera' },
+  ]
+
   return (
     <div className={textStyle.textAlignCenter}>
       <h1>Web Programming Club</h1>
@@ -14,12 +24,14 @@ export default function Home() {
       <p>23.12.01 / 보늬축제, 작품 시연</p>
       <hr />
       <h3> [ 작품 목록 ]</h3>
-      <h5>Speedy</h5>
-      <h5>WORRRD</h5>
-      <h5>MeteorImpact</h5>
-      <h5>DormitoryRoom</h5>
-      <h5>AnioneGPT</h5>
-      <h5>WebCam</h5>
+      {projectList.map((project, index) => (
+        <>
+          <Link key={index} href={project.path} className={textStyle.textMargin}>
+            {project.name}
+          </Link>
+          <br />
+        </>
+      ))}
     </div>
   );
 }
