@@ -6,7 +6,7 @@ import { firestore } from "@/api/firebase";
 import styles from "@/styles/ranking.module.css";
 
 export default function Ranking() {
-  const [selectedGame, setSelectedGame] = useInput("DinoRush");
+  const [selectedGame, setSelectedGame] = useInput("Speedy");
   const [rankings, setRankings] = useState([]);
 
   function getRankings() {
