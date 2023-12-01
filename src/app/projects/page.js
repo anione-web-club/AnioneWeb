@@ -27,7 +27,7 @@ export default function Projects() {
 
   return (
     <div className={styles.background}>
-      <h1 className={styles.title}>_Project</h1>
+      <h1 className={styles.title}>Project</h1>
       {projects.map((project) => (
         <>
           <hr />
